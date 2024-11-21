@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #C6E7FF;
+  --secondary: #73A7BE;
+  --disable-text: #C0C7D0;
+  --disable: #F6F8FA;
+  --danger: #F04E51;
+
+  /* Tags */
+  --important: #F5BABA;
+  --life: #F0D8F5;
+  --family: #FCEDBB;
+  --important: #F5BABA;
+  --work: #D0EDD1;
+}
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+} */
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
