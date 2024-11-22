@@ -36,7 +36,7 @@ const Home = () => {
 
       {/* Task List */}
       <ul className="mt-3">
-        <Row title="jklsdjfklsjadlkfergergegergergsoisdjlkgjirejgshgoiserhg;ieshrgoihj" isImportant={true} isComplete={false} />
+        <Row id="1" title="sdoifjaslkdfjilsjdflkjs" isImportant={true} isComplete={false} />
       </ul>
     </div>
 

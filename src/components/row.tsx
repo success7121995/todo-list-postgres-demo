@@ -16,6 +16,7 @@ import EnterIcon from '@/src/public/svg/enter.svg';
 import EditIcon from '@/src/public/svg/edit.svg';
 
 interface RowProps {
+  id: string,
   title: string,
   category?: 'life' | 'work' | 'family' | null,
   isImportant: boolean,
@@ -23,6 +24,7 @@ interface RowProps {
 }
 
 const Row = ({
+  id,
   title,
   category = null,
   isImportant,
@@ -73,8 +75,12 @@ const Row = ({
               ],
             }}
           >
-            <DropdownItem key="view" startContent={<EnterIcon className="h-[16px] w-[16px]" />}>
-              <span className="text-xs">View</span>
+            <DropdownItem
+              key="view"
+              startContent={<EnterIcon className="h-[16px] w-[16px]"
+              onClick={() => push(`/task/${id}`)}
+            />}>
+              <span className="text-xs w-full">View</span>
             </DropdownItem>
             <DropdownItem key="edit" startContent={<EditIcon className="h-[16px] w-[16px]" />}>
               <span className="text-xs">Edit</span>
