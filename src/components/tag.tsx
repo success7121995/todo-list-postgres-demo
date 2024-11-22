@@ -22,9 +22,9 @@ const Tag = ({
       key={key}
       className={`
         w-fit px-3 rounded-xl text-1xs font-publicSans
-        ${!color || isDisabled ? 'bg-disable' : `bg-${color}`}
         ${isDisabled ? 'text-disableText' : 'text-darkText'}
       `}
+      style={{ backgroundColor: !color || isDisabled ? 'var(--disable)' : `var(--${color})`}}
     >
       {name}
     </button>
