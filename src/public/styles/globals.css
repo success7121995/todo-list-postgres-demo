@@ -5,6 +5,7 @@
 :root {
   --primary: #C6E7FF;
   --secondary: #73A7BE;
+  --dark-text: #383636;
   --disable-text: #C0C7D0;
   --disable: #F6F8FA;
   /* --disable: #c0c6c9; */
@@ -14,7 +15,6 @@
   --important: #F5BABA;
   --life: #F0D8F5;
   --family: #FCEDBB;
-  --important: #F5BABA;
   --work: #D0EDD1;
 }
 

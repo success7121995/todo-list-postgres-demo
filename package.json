@@ -9,6 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.10.3",
+    "@nextui-org/dropdown": "^2.1.31",
+    "@nextui-org/system": "^2.2.6",
+    "@nextui-org/theme": "^2.2.11",
+    "framer-motion": "^11.11.17",
     "next": "15.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

@@ -1,12 +1,7 @@
-import { SearchBar } from "../components";
+// Navigate to /tasks
 
-const Home = () => {
-  return (<>
-    <h1 className="font-tangerine text-5xl text-secondary text-center mt-10">Tasks</h1>
+import { redirect } from 'next/navigation'
 
-    <SearchBar />
+const Redirect = () => redirect('/tasks');
 
-  </>);
-};
-
-export default Home;
+export default Redirect;
