@@ -13,8 +13,8 @@ export interface ItemProps {
 }
 
 interface DataContextState {
-  mount: boolean,
-  fetchItems: () => Promise<ItemProps[] | undefined>
+  fetchItems: () => Promise<ItemProps[] | undefined>,
+  toggleItemState: (id: string, hande: 'is_important' | 'is_completed', state: boolean) => void
 }
 
 const DataContext = createContext<DataContextState | undefined>(undefined);
@@ -29,30 +29,44 @@ const DataProvider = ({
 }: Readonly<{
   children: ReactNode
 }>) => {
-  const [mount, setMount] = useState<boolean>(false);
-  
-  const fetchItems = async (): Promise<ItemProps[] | undefined> => {
-    setMount(true);
 
+  /**
+   * Fetch items from database
+   */
+  const fetchItems = async (): Promise<ItemProps[] | undefined> => {
     try {
       const res = await fetch('/api/fetch-items');
       const items: ItemProps[] = await res.json();
       
       if (!res.ok) throw Error(); 
-
-      setMount(false);
       return items;
-
     } catch (err) {
-      setMount(false);
       console.log(err);
     }
   };
 
+  /**
+   * Mark or remove important tag
+   * @param isImportant - the state of important
+   */
+  const toggleItemState = async (id: string, handle: 'is_important' | 'is_completed', state: boolean) => {
+    try {
+      const res = await fetch('/api/toggle', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, handle, state })
+      });
+      
+      if (!res.ok) throw Error();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (<>
     <DataContext.Provider value={{
-      mount,
-      fetchItems
+      fetchItems,
+      toggleItemState
     }}>
       {children}
     </DataContext.Provider>

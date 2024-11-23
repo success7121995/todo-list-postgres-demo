@@ -1,5 +1,8 @@
 "use client"
+
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useData } from '@/src/context/DataProvider';
 import {
   Dropdown,
   DropdownTrigger,
@@ -29,7 +32,7 @@ interface RowProps {
   title: string,
   category?: 'life' | 'work' | 'family' | null,
   isImportant: boolean,
-  isComplete: boolean   
+  isCompleted: boolean   
 }
 
 const Row = ({
@@ -37,16 +40,61 @@ const Row = ({
   title,
   category = null,
   isImportant,
-  isComplete
+  isCompleted
 }: RowProps) => {
+  // State to track whether it is marked as important
+  const [importantState, setImportantState] = useState<boolean>(isImportant);
+  const [completeState, setCompleteState] = useState<boolean>(isCompleted);
+  // Ensure that the state update only occurs while the important or complete is switched
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const { push } = useRouter();
+  const { toggleItemState } = useData();
+
+  useEffect(() => {
+    // Prevent the initial toggling
+    if (!isMounted) return;
+
+    const handletoggleItemState = async () => {
+      try {
+        await toggleItemState(id, 'is_important', importantState);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsMounted(false);
+      }
+    };
+
+    handletoggleItemState();
+  }, [importantState]);
+
+  useEffect(() => {
+    // Prevent the initial toggling
+    if (!isMounted) return;
+
+    const handletoggleItemState = async () => {
+      try {
+        await toggleItemState(id, 'is_completed', completeState);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsMounted(false);
+      }
+    };
+
+    handletoggleItemState();
+  }, [completeState]);
 
   return (<>
-    <li className="relative w-11/12 mx-auto border-b-[1px] border-primary py-2 flex items-center gap-x-3">
+    <li className="relative w-11/12 mx-auto border-b-[1px] border-primary py-4 flex items-center gap-x-3">
 
       <button
-        className={`${!isImportant ? 'opacity-0 hover:opacity-30 transition': 'opacity-100 hover:scale-105 transition'} absolute -left-10`}
+        onClick={() => {
+          setIsMounted(true);
+          setImportantState(prev => !prev);
+        }}
+        className={`${!importantState ? 'opacity-0 hover:opacity-30 transition': 'opacity-100 hover:scale-110 transition'} absolute -left-10`}
       >
         <ExclamIcon className="h-[30px] w-[30px]"/>
       </button>
@@ -57,8 +105,14 @@ const Row = ({
         <div className={`${category ? `bg-${category}` : 'bg-disableText'} h-[6px] w-[6px] rounded-full`}></div>
 
         {/* Checkbox */}
-        <button className="border-1 border-secondary h-[16px] w-[16px] flex justify-center items-center">
-          <TickIcon className={`${isComplete ? 'opacity-100' : 'opacity-0 hover:opacity-30 transition'} h-[15px] w-[15px]`}/>
+        <button
+          onClick={() => {
+            setIsMounted(true);
+            setCompleteState(prev => !prev);
+          }}
+          className="border-1 border-secondary h-[16px] w-[16px] flex justify-center items-center"
+        >
+          <TickIcon className={`${completeState ? 'opacity-100' : 'opacity-0 hover:opacity-30 transition'} h-[15px] w-[15px]`}/>
         </button>
       </div>
 
