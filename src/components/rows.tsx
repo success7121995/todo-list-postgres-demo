@@ -29,6 +29,14 @@ const Rows = () => {
     handleFetchItems();
   }, [fetchItems]);
 
+  /**
+   * Hanlde Delete data from database
+   * @param id - item's id
+   */
+  const handleOnDelete = (id: string) => {
+    setItems(items => items?.filter(item => item.t_id !== id));
+  }
+
   // Show loading indicator while it is loading
   if (isLoading) {
     return (
@@ -39,17 +47,25 @@ const Rows = () => {
   }
   
   return (<>
-    <ul className="mt-3">
-      {items?.map(item => (
-        <Row
-          key={item.t_id}
-          id={item.t_id}
-          title={item.t_title}
-          isImportant={item.is_important}
-          isCompleted={item.is_completed}
-        />
-      ))}
-    </ul>
+    { items && items.length > 0 ? (
+
+      <ul className="mt-3">
+        {items?.map(item => (
+          <Row
+            key={item.t_id}
+            id={item.t_id}
+            title={item.t_title}
+            isImportant={item.is_important}
+            isCompleted={item.is_completed}
+            onDelete={id => handleOnDelete(id)}
+          />
+        ))}
+      </ul>
+    ) : (
+      <div className="text-center mt-[50%]">
+        <h4 className="font-publicSans text-base text-secondary">No Task</h4>
+      </div>
+    )}
   </>);
 };
 

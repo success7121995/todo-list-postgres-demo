@@ -32,7 +32,8 @@ interface RowProps {
   title: string,
   category?: 'life' | 'work' | 'family' | null,
   isImportant: boolean,
-  isCompleted: boolean   
+  isCompleted: boolean,
+  onDelete?: (id: string) => void 
 }
 
 const Row = ({
@@ -40,7 +41,8 @@ const Row = ({
   title,
   category = null,
   isImportant,
-  isCompleted
+  isCompleted,
+  onDelete = () => {}
 }: RowProps) => {
   // State to track whether it is marked as important
   const [importantState, setImportantState] = useState<boolean>(isImportant);
@@ -172,7 +174,7 @@ const Row = ({
         onOpenChange={onOpenChange}
         classNames={{
           body: 'text-center',
-          base: 'w-2/6 ',
+          base: 'w-2/6 max-w-[280px]',
           closeButton: 'hover:bg-disable active:bg-white/10 text-disableText'
         }}
       >
@@ -194,6 +196,7 @@ const Row = ({
                     Cancel
                   </Button>
                   <Button
+                    onPress={() => onDelete(id)}
                     size="md"
                     className="font-publicSans text-sm bg-red-200 text-danger"
                   >
