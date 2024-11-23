@@ -1,45 +1,33 @@
-"use client"
-
-import { SearchBar, Tag, Row } from "../../components";
-import { useRouter } from 'next/navigation';
+import Link from "next/link";
+import { SearchBar, Tags, Rows} from "@/src/components";
 
 // SVG
 import PlugIcon from '@/src/public/svg/plus.svg';
 
 const Home = () => {
-  const { push } = useRouter();
-
   return (<>
     <h1 className="font-tangerine text-5xl text-secondary text-center mt-10">Tasks</h1>
 
     {/* Main Section */}
     <div>
-
       <div className="relative">
         <SearchBar />
 
         {/* Insert */}
-        <button className="bg-primary rounded-full absolute -right-[15px] top-[2px] p-[10px] md:right-0" onClick={() => push('/insert')}>
+        <Link
+          href="/insert"
+          className="bg-primary rounded-full absolute -right-[15px] top-[2px] p-[10px] md:right-0"
+        >
           <PlugIcon className="h-[13px] w-[13px] fill-secondary"/>
-        </button>
+        </Link>
       </div>
 
       {/* Tags Bar */}
-      <div className="my-3 flex justify-between items-center gap-x-4">
-        
-        <Tag name="All" color="primary" />
-        <Tag name="Important" color="important" />
-        <Tag name="Life" color="life" />
-        <Tag name="Family" color="family" />
-        <Tag name="Work" color="work" />
-      </div>
+      <Tags />
 
       {/* Task List */}
-      <ul className="mt-3">
-        <Row id="1" title="sdoifjaslkdfjilsjdflkjs" isImportant={true} isComplete={false} />
-      </ul>
+      <Rows />
     </div>
-
   </>);
 };
 

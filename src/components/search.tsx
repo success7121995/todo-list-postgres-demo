@@ -81,14 +81,16 @@ const SearchBar = () => {
                 'text-darkText',
                 'transition-opacity',
                 'data-[hover=true]:bg-disable',
-                'outline-none'
+                'outline-none',
+                'px-full',
+                'py-[3px]'
               ],
             }}
           >
-            <DropdownItem key="a-z"><span className="text-xs">Sort A to Z</span></DropdownItem>
-            <DropdownItem key="z-a"><span className="text-xs">Sort Z to A</span></DropdownItem>
-            <DropdownItem key="o-n"><span className="text-xs">Sort Newest to Oldest</span></DropdownItem>
-            <DropdownItem key="n-o"><span className="text-xs">Sort Oldest to Newest</span></DropdownItem>
+            <DropdownItem key="a-z" textValue="a-z"><span className="text-xs">Sort A to Z</span></DropdownItem>
+            <DropdownItem key="z-a" textValue="z-a"><span className="text-xs">Sort Z to A</span></DropdownItem>
+            <DropdownItem key="o-n" textValue="o-n"><span className="text-xs">Sort Newest to Oldest</span></DropdownItem>
+            <DropdownItem key="n-o" textValue="n-o"><span className="text-xs">Sort Oldest to Newest</span></DropdownItem>
           </DropdownMenu>
         </Dropdown>
 

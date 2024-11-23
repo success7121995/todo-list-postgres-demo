@@ -1,15 +1,13 @@
 "use client"
 
-interface TagProps {
-  key?: string,
+export interface TagProps {
   name?: string,
-  color?: 'primary' | 'important' | 'life' | 'family' | 'work',
+  color?: string,
   action?: () => void,
   isDisabled?: boolean
 }
 
 const Tag = ({
-  key,
   name,
   color,
   action,
@@ -19,7 +17,6 @@ const Tag = ({
   return (<>
     <button
       onClick={action}
-      key={key}
       className={`
         w-fit px-3 rounded-xl text-1xs font-publicSans
         ${isDisabled ? 'text-disableText' : 'text-darkText'}
