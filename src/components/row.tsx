@@ -174,7 +174,7 @@ const Row = ({
         onOpenChange={onOpenChange}
         classNames={{
           body: 'text-center',
-          base: 'w-2/6 max-w-[280px]',
+          base: 'w-2/6 min-w-[200px] max-w-[280px]',
           closeButton: 'hover:bg-disable active:bg-white/10 text-disableText'
         }}
       >
