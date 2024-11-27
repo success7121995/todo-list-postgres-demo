@@ -12,11 +12,19 @@ export interface ItemProps {
   c_name: string | null;
 }
 
+// Interface for categories
+export interface CategoryProps {
+  c_id: string,
+  c_name: string
+}
+
 // Interface defining the shape of the data context
 interface DataContextState {
-  fetchItems: () => Promise<ItemProps[] | undefined>;
-  toggleItemState: (id: string, handle: 'is_important' | 'is_completed', state: boolean) => Promise<void>;
-  deleteItem: (id: string) => Promise<boolean>;
+  fetchItems: () => Promise<ItemProps[] | undefined>,
+  fetchCategories: () => Promise<CategoryProps[] | undefined>
+  toggleItemState: (id: string, handle: 'is_important' | 'is_completed', state: boolean) => Promise<void>,
+  deleteItem: (id: string) => Promise<boolean>,
+
 }
 
 // Creating the data context
@@ -50,6 +58,26 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
       return undefined;
     }
   };
+
+  /**
+   * Fetches items from the backend API.
+   * @returns A promise that resolves to an array of ItemProps or undefined.
+   */
+  const fetchCategories = async (): Promise<CategoryProps[] | undefined> => {
+    try {
+      const res = await fetch('/api/fetch-categories');
+      if (!res.ok) {
+        console.error('Failed to fetch cateogories:', res.statusText);
+        return undefined;
+      }
+      const categories: CategoryProps[] = await res.json();
+      return categories;
+    } catch (err) {
+      console.error('Error fetching cateogories:', err);
+      return undefined;
+    }
+  };
+  
 
   /**
    * Toggles the state of an item (important or completed).
@@ -93,7 +121,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
         return false;
       }
 
-      const data = await res.json();
+      await res.json();
       // Optionally, check the response message or status
       return true;
     } catch (err) {
@@ -105,6 +133,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   return (
     <DataContext.Provider value={{
       fetchItems,
+      fetchCategories,
       toggleItemState,
       deleteItem
     }}>

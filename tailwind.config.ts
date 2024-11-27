@@ -4,7 +4,7 @@ import type { Config } from "tailwindcss";
 export default {
   content: [
     "./src/**/**/*.{js,ts,jsx,tsx,mdx}",
-    "./node_modules/@nextui-org/theme/dist/components/(button|dropdown|modal|ripple|spinner|menu|divider|popover).js"
+    "./node_modules/@nextui-org/theme/dist/components/(button|dropdown|input|modal|select|ripple|spinner|menu|divider|popover|listbox|scroll-shadow).js"
   ],
   theme: {
     extend: {

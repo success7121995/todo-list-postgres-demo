@@ -12,13 +12,17 @@
     "@neondatabase/serverless": "^0.10.3",
     "@nextui-org/button": "^2.0.38",
     "@nextui-org/dropdown": "^2.1.31",
+    "@nextui-org/input": "^2.2.5",
     "@nextui-org/modal": "^2.0.41",
+    "@nextui-org/select": "^2.2.7",
     "@nextui-org/system": "^2.2.6",
     "@nextui-org/theme": "^2.2.11",
+    "@nextui-org/use-infinite-scroll": "^2.1.5",
     "framer-motion": "^11.11.17",
     "next": "15.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.2",
     "react-spinners": "^0.14.1"
   },
   "devDependencies": {

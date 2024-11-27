@@ -15,7 +15,7 @@ const Home = () => {
 
         {/* Insert */}
         <Link
-          href="/insert"
+          href="/tasks/insert"
           className="bg-primary rounded-full absolute -right-[15px] top-[2px] p-[10px] md:right-0"
         >
           <PlugIcon className="h-[13px] w-[13px] fill-secondary"/>
