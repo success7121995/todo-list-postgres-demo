@@ -1,6 +1,7 @@
 "use client"
 
 import { ReactNode, useContext, createContext } from 'react';
+import { useRouter } from 'next/navigation';
 
 export interface FormDataProps {
   category?: string,
@@ -46,6 +47,8 @@ export const useData = () => {
 
 // DataProvider component that wraps the application and provides data context
 const DataProvider = ({ children }: { children: ReactNode }) => {
+  const { replace } = useRouter();
+
 
   /**
    * Fetches items from the backend API.
@@ -103,7 +106,10 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
           t_cnt: content,
           is_important
         })
-      })
+      });
+
+      // Redirect to home page
+      if (res.ok && res.status == 200) replace('/');
       return true;
     } catch (err) {
       // console.error(`Error deleting item ${id}:`, err);
