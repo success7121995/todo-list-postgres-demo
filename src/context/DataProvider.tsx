@@ -1,6 +1,13 @@
 "use client"
 
-import { ReactNode, useState, useEffect, useContext, createContext } from 'react';
+import { ReactNode, useContext, createContext } from 'react';
+
+export interface FormDataProps {
+  category?: string,
+  is_important: boolean,
+  title: string,
+  content?: string | null
+}
 
 // Interface for individual item properties
 export interface ItemProps {
@@ -21,10 +28,10 @@ export interface CategoryProps {
 // Interface defining the shape of the data context
 interface DataContextState {
   fetchItems: () => Promise<ItemProps[] | undefined>,
-  fetchCategories: () => Promise<CategoryProps[] | undefined>
+  fetchCategories: () => Promise<CategoryProps[] | undefined>,
+  insertItem: (data: FormDataProps) => Promise<boolean>,
   toggleItemState: (id: string, handle: 'is_important' | 'is_completed', state: boolean) => Promise<void>,
-  deleteItem: (id: string) => Promise<boolean>,
-
+  deleteItem: (id: string) => Promise<boolean>
 }
 
 // Creating the data context
@@ -78,6 +85,31 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
     }
   };
   
+  /**
+   * Insert an item
+   * @param data 
+   * @returns 
+   */
+  const insertItem = async (data: FormDataProps) => {
+    const { title, category, is_important, content } = data;
+
+    try {
+      const res = await fetch('/api/insert-item', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          t_title: title,
+          c_id: category,
+          t_cnt: content,
+          is_important
+        })
+      })
+      return true;
+    } catch (err) {
+      // console.error(`Error deleting item ${id}:`, err);
+      return false;
+    }
+  };
 
   /**
    * Toggles the state of an item (important or completed).
@@ -99,7 +131,6 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (err) {
       console.error(`Error toggling ${handle} for item ${id}:`, err);
-      // Optionally, re-throw or handle the error as needed
     }
   };
 
@@ -134,6 +165,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
     <DataContext.Provider value={{
       fetchItems,
       fetchCategories,
+      insertItem,
       toggleItemState,
       deleteItem
     }}>

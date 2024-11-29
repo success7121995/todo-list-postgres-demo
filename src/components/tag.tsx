@@ -16,6 +16,7 @@ const Tag = ({
 
   return (<>
     <button
+      type="button"
       onClick={action}
       className={`
         w-fit px-3 rounded-xl text-1xs font-publicSans

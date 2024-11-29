@@ -1,23 +1,18 @@
 "use client"
 
 import { useEffect, useState } from 'react';
-import { useData, type CategoryProps } from '@/src/context/DataProvider';
-import {Select, SelectItem} from "@nextui-org/select";
-import { useForm, Controller, type SubmitHandler } from "react-hook-form";
-
-interface FormDataProps {
-  category: string,
-  is_important: boolean,
-  title: string,
-  content?: string
-}
+import { useData, type CategoryProps, type FormDataProps } from '@/src/context/DataProvider';
+import { Select, SelectItem } from '@nextui-org/select';
+import { Input, Textarea } from '@nextui-org/input';
+import { useForm, Controller, type SubmitHandler } from 'react-hook-form';
+import { Tag } from '@/src/components';
 
 const Form = () => {
   const [categories, setCategories] = useState<CategoryProps[]>([]);
 
-  const { fetchCategories } = useData();
+  const { fetchCategories, insertItem } = useData();
 
-  const { control, handleSubmit } = useForm<FormDataProps>({
+  const { control, handleSubmit, register } = useForm<FormDataProps>({
     defaultValues: {
       category: '',
       is_important: false,
@@ -25,7 +20,19 @@ const Form = () => {
       content: '',
     },
   });
-  const onSubmit: SubmitHandler<FormDataProps> = data => console.log(data);
+
+  /**
+   * 
+   * @param data - Form data
+   */
+  const onSubmit: SubmitHandler<FormDataProps> = async data => {
+    try {
+      const success = await insertItem(data);
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     const handleFetchCategories = async () => {
@@ -39,21 +46,29 @@ const Form = () => {
   }, []);
 
   return (<>
-    <form>
+    <form className="mt-3 relative" onSubmit={handleSubmit(onSubmit)}>
       <div>
         <Controller
+          { ...register('category')}
           name="category"
           control={control}
           render={({ field, fieldState}) => (
             <>
               <Select
                 { ...field }
+                aria-label="Selection of category"
                 placeholder="Select a category"
                 onChange={value => field.onChange(value)}
                 classNames={{
-                  base: 'w-[200px] h-[10px]',
-                  trigger: 'h-[10px]',
-                  label: 'text-xs font-publicSans text-disableText',
+                  base: 'w-[200px]',
+                  helperWrapper: 'text-red-200',
+                  value: 'text-xs font-publicSans',
+                  listboxWrapper: 'max-h-[400px]'
+                }}
+                popoverProps={{
+                  classNames: {
+                    content: 'p-[2px]',
+                  },
                 }}
               >
                 {categories.map(categories => (
@@ -70,8 +85,62 @@ const Form = () => {
               )}
             </>
           )}
-        />    
+        />
+
+        {/* Toggle Important */}
+        <div className="mt-[2px]">
+          <Controller 
+            name="is_important"
+            control={control}
+            render={({ field }) => (
+              <Tag
+                name="Important"
+                color="important"
+                isDisabled={!field.value}
+                action={() => field.onChange(!field.value)}
+              />
+            )}
+          />
+        </div>
+        
+        {/* Title */}
+        <div className="flex flex-col mb-5">
+          <Input
+            { ...register('title') }
+            aria-label="Input for title"
+            type="text"
+            variant="underlined" 
+            label="title"
+            classNames={{
+              base: 'group-data-[focus=true]:border-none',
+              label: 'text-secondary group-data-[focus=true]:text-secondary',
+              input: [
+                'font-publicSans group-data-[focus=true]:text-sm group-data-[focus=true]:text-darkText',
+              ],
+              inputWrapper: [
+                'border-b-[1px] border-secondary'
+              ]
+            }}
+          />
+        </div>
+
+        {/* Textarea */}
+        <Textarea
+          { ...register('content')}
+          aria-label="Textarea for content"
+          label="Content"
+          placeholder="Enter your description"
+          classNames={{
+            input: 'font-publicSans text-sm text-darkText'
+          }}
+          minRows={10}
+          maxRows={10}
+        />
+
       </div>
+      
+      {/* Submit */}
+      <button type="submit" className="absolute bg-primary px-3 py-[3px] font-publicSans text-sm text-secondary top-2 right-3 rounded-md">Save</button>
 
     </form>
   </>);
