@@ -96,9 +96,8 @@ const Row = ({
     handletoggleItemState();
   }, [completeState]);
 
-
   return (<>
-    <li className="relative w-11/12 mx-auto border-b-[1px] border-primary py-4 flex items-center gap-x-3">
+    <li className="group hover:bg-disable transition-colors duration-200 relative w-11/12 mx-auto border-b-[1px] border-primary py-4 flex items-center gap-x-3">
 
       <button
         onClick={() => {
@@ -131,10 +130,10 @@ const Row = ({
       <h5 className="font-publicSans text-xs text-darkText max-w-[180px] truncate">{title}</h5>
 
       {/* Button Group */}
-      <div className="absolute flex justify-center items-center right-0 gap-x-2">
+      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute flex justify-center items-center right-0 gap-x-2 mr-1">
         <Dropdown>
           <DropdownTrigger>
-            <MenuIcon className="h-[23px] w-[23px] fill-primary hover:fill-secondary cursor-pointer" />
+            <MenuIcon className="h-[23px] w-[23px] fill-primary hover:fill-secondary cursor-pointer transition-color duration-300" />
           </DropdownTrigger>
 
           <DropdownMenu
@@ -173,7 +172,7 @@ const Row = ({
           </DropdownMenu>
         </Dropdown>
         
-        <button className="hover:bg-red-200 p-[2px] rounded-[5px] transition" onClick={onOpen}>
+        <button className="hover:bg-red-200 p-[2px] rounded-[5px] transition-color duration-300" onClick={onOpen}>
           <TrashIcon className="h-[23px] w-[23px]" />
         </button>
       </div>
