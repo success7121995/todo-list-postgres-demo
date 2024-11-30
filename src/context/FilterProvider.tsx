@@ -3,8 +3,10 @@
 import { ReactNode, useContext, createContext, useState } from 'react';
 
 interface FilterContextState {
-
+  filterItemsByCategories: (filter: FiltersProps) => void
 }
+
+type FiltersProps = 'important' | 'life' | 'family' | 'work';
 
 const FilterContext = createContext<FilterContextState | undefined>(undefined);
 
@@ -17,13 +19,13 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
   // Default no filter
   const [filters, setFilters] = useState<string[]>([]);
 
-  const filterItemsByCategories = () => {
-
+  const filterItemsByCategories = (filter: FiltersProps) => {
+    
   };
 
   return (
     <FilterContext.Provider value={{
-
+      filterItemsByCategories
     }}>
       {children}
     </FilterContext.Provider>
