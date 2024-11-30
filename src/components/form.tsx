@@ -41,8 +41,6 @@ const Form = ({ action, id }: FormProps) => {
   };
 
   useEffect(() => {
-    console.log(id);
-    console.log(action);
     /**
      * Handle fetch categories
      */
@@ -61,15 +59,15 @@ const Form = ({ action, id }: FormProps) => {
         setLoading(true);
         if (!id) return;
         const item = await fetchItem(id);
-
+        
         if (item) {
+          const items = Object.values(item)[0];
           reset({
-            category: item.c_name || undefined,
-            is_important: item.is_important,
-            title: item.t_title,
-            content: item.t_cnt,
+            category: items.c_name || undefined,
+            is_important: items.is_important,
+            title: items.t_title,
+            content: items.t_cnt,
           });
-          console.log('hihi');
         }
       } catch (error) {
         console.error('Failed to fetch item:', error);

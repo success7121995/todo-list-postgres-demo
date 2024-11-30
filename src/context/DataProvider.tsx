@@ -29,7 +29,7 @@ export interface CategoryProps {
 // Interface defining the shape of the data context
 interface DataContextState {
   fetchItems: () => Promise<ItemProps[] | undefined>,
-  fetchItem: (id: string) => Promise<ItemProps | undefined>
+  fetchItem: (id: string) => Promise<ItemProps[] | undefined>
   fetchCategories: () => Promise<CategoryProps[] | undefined>,
   insertItem: (data: FormDataProps) => Promise<boolean>,
   toggleItemState: (id: string, handle: 'is_important' | 'is_completed', state: boolean) => Promise<void>,
@@ -73,7 +73,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
    * Fetch item from the backend API.
    * @returns A promise that resolves to an array of ItemProps or undefined.
    */
-  const fetchItem = async (id: string): Promise<ItemProps | undefined> => {
+  const fetchItem = async (id: string): Promise<ItemProps[] | undefined> => {
     try {
       const res = await fetch(`/api/fetch-item/${id}`);
       if (!res.ok) {
@@ -81,7 +81,8 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
         return undefined;
       }
 
-      const item: ItemProps = await res.json();
+      const item: ItemProps[] = await res.json();
+
       return item;
     } catch (err) {
       console.error('Error fetching item:', err);

@@ -147,7 +147,7 @@ const Row = ({
               key="view"
               textValue="view"
               startContent={<EnterIcon className="h-[16px] w-[16px]"/>}
-              onClick={() => push(`/task/${id}`)}
+              onClick={() => push(`/tasks/${id}`)}
             >
               <span className="text-xs w-full">View</span>
             </DropdownItem>
@@ -156,7 +156,7 @@ const Row = ({
               onClick={() => push(`/tasks/update/${id}`)}
               key="edit"
               textValue="edit"
-              startContent={<EditIcon className="h-[16px] w-[16px]" />}
+              startContent={<EditIcon className="h-[16px] w-[16px] stroke-darkText" />}
             >
               <span className="text-xs">Edit</span>
             </DropdownItem>
