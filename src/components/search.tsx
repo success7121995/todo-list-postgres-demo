@@ -50,7 +50,7 @@ const SearchBar = () => {
     const searchValue = searchRef.current?.value.trim();
 
     if (searchValue) {
-      push(`?search=${encodeURIComponent(searchValue)}${sort ? `&sort=${sort}` : '' }`);
+      push(`?search=${encodeURIComponent(searchValue)}${sort ? `&sort=${encodeURIComponent(sort)}` : '' }`);
     } else {
       replace('/');
     }

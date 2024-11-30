@@ -18,7 +18,7 @@ const Rows = () => {
   const search = searchParams.get('search');
   const sort = searchParams.get('sort');
 
-  const { fetchItems, deleteItem } = useData();
+  const { fetchItems, deleteItem, searchItems } = useData();
   
   useEffect(() => {
     const handleFetchItems = async () => {
@@ -42,9 +42,18 @@ const Rows = () => {
   }, [fetchItems]);
 
   useEffect(() => {
-    if (search) {
-      
+    if (!search) return;
+    const handleSearchItems = async () => {
+      const fetchedItems = await searchItems(search, sort || undefined);
+
+      if (fetchedItems && fetchedItems.length > 0 ) {
+        setItems(fetchedItems as ItemProps[]);
+      } else {
+        
+      }
     }
+
+    handleSearchItems();
   }, [search]);
 
   /**

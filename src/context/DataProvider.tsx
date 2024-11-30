@@ -33,7 +33,8 @@ interface DataContextState {
   fetchCategories: () => Promise<CategoryProps[] | undefined>,
   insertItem: (data: FormDataProps) => Promise<boolean>,
   toggleItemState: (id: string, handle: 'is_important' | 'is_completed', state: boolean) => Promise<void>,
-  deleteItem: (id: string) => Promise<boolean>
+  deleteItem: (id: string) => Promise<boolean>,
+  searchItems: (search: string, sort?: string) => Promise<ItemProps[] | undefined>
 }
 
 // Creating the data context
@@ -193,18 +194,21 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
    * @param search
    * @param sort 
    */
-  const searchItem = async (search: string, sort?: string) => {
+  const searchItems = async (search: string, sort?: string): Promise<ItemProps[] | undefined> => {
     try {
       
-      const res = await fetch('/api/fetch-categories');
+      const res = await fetch(`/api/search-items?search=${encodeURIComponent(search)}${sort ? `&sort=${encodeURIComponent(sort)}` : '' }`);
+
       if (!res.ok) {
-        console.error('Failed to fetch cateogories:', res.statusText);
+        console.error('Failed to search:', res.statusText);
         return undefined;
       }
-      const categories: CategoryProps[] = await res.json();
-      return categories;
+
+      const items: ItemProps[] = await res.json();
+
+      return items;
     } catch (err) {
-      console.error('Error fetching cateogories:', err);
+      console.error('Error fetching items', err);
       return undefined;
     }
   };
@@ -216,7 +220,8 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
       fetchCategories,
       insertItem,
       toggleItemState,
-      deleteItem
+      deleteItem,
+      searchItems
     }}>
       {children}
     </DataContext.Provider>
