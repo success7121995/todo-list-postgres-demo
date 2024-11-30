@@ -16,12 +16,11 @@ const Rows = () => {
 
   const searchParams = useSearchParams();
   const search = searchParams.get('search');
+  const sort = searchParams.get('sort');
 
   const { fetchItems, deleteItem } = useData();
   
   useEffect(() => {
-    console.log(search);
-
     const handleFetchItems = async () => {
       try {
         setIsLoading(true);
@@ -42,6 +41,12 @@ const Rows = () => {
     handleFetchItems();
   }, [fetchItems]);
 
+  useEffect(() => {
+    if (search) {
+      
+    }
+  }, [search]);
+
   /**
    * Handles the deletion of an item.
    * Only removes the item from the UI if the deletion is successful on the server.
@@ -60,7 +65,7 @@ const Rows = () => {
       console.error('Error deleting item:', err);
       setError('An unexpected error occurred while deleting the task.');
     }
-  }
+  };
 
   // Display a loading indicator while fetching data
   if (isLoading) {

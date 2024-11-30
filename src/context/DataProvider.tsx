@@ -188,6 +188,27 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  /**
+   * Handle search
+   * @param search
+   * @param sort 
+   */
+  const searchItem = async (search: string, sort?: string) => {
+    try {
+      
+      const res = await fetch('/api/fetch-categories');
+      if (!res.ok) {
+        console.error('Failed to fetch cateogories:', res.statusText);
+        return undefined;
+      }
+      const categories: CategoryProps[] = await res.json();
+      return categories;
+    } catch (err) {
+      console.error('Error fetching cateogories:', err);
+      return undefined;
+    }
+  };
+
   return (
     <DataContext.Provider value={{
       fetchItems,

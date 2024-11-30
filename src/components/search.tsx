@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from 'next/navigation';
-import { FormEvent, useRef, useEffect } from 'react';
+import { FormEvent, useRef, useEffect, useState } from 'react';
 import {
   Dropdown,
   DropdownTrigger,
@@ -13,7 +13,12 @@ import {
 import SearchIcon from '@/src/public/svg/search.svg';
 import FilterIcon from '@/src/public/svg/filter.svg';
 
+type Sort = 'a-z' | 'z-a' | 'o-n' | 'n-o' | undefined;
+
 const SearchBar = () => {
+  // State of the conditional search
+  const [sort, setSort] = useState<Sort>(undefined);
+
   const { push, replace } = useRouter();
 
   const searchRef = useRef<HTMLInputElement>(null);
@@ -45,7 +50,7 @@ const SearchBar = () => {
     const searchValue = searchRef.current?.value.trim();
 
     if (searchValue) {
-      push(`?search=${encodeURIComponent(searchValue)}`);
+      push(`?search=${encodeURIComponent(searchValue)}${sort ? `&sort=${sort}` : '' }`);
     } else {
       replace('/');
     }
@@ -92,10 +97,10 @@ const SearchBar = () => {
               ],
             }}
           >
-            <DropdownItem key="a-z" textValue="a-z"><span className="text-xs">Sort A to Z</span></DropdownItem>
-            <DropdownItem key="z-a" textValue="z-a"><span className="text-xs">Sort Z to A</span></DropdownItem>
-            <DropdownItem key="o-n" textValue="o-n"><span className="text-xs">Sort Newest to Oldest</span></DropdownItem>
-            <DropdownItem key="n-o" textValue="n-o"><span className="text-xs">Sort Oldest to Newest</span></DropdownItem>
+            <DropdownItem key="a-z" textValue="a-z" onClick={() => setSort('a-z')}><span className="text-xs">Sort A to Z</span></DropdownItem>
+            <DropdownItem key="z-a" textValue="z-a" onClick={() => setSort('z-a')}><span className="text-xs">Sort Z to A</span></DropdownItem>
+            <DropdownItem key="o-n" textValue="o-n" onClick={() => setSort('n-o')}><span className="text-xs">Sort Newest to Oldest</span></DropdownItem>
+            <DropdownItem key="n-o" textValue="n-o" onClick={() => setSort('o-n')}><span className="text-xs">Sort Oldest to Newest</span></DropdownItem>
           </DropdownMenu>
         </Dropdown>
 
