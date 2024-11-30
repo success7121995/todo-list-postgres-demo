@@ -3,7 +3,7 @@ import { BackBtn, Form } from '@/src/components';
 const UpdatePage = async ({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) => {
   const id = (await params).id;
 
