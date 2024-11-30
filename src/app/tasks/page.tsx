@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { SearchBar, Tags, Rows} from "@/src/components";
 
@@ -27,6 +28,7 @@ const Home = () => {
 
       {/* Task List */}
       <Rows />
+      <Suspense />
     </div>
   </>);
 };
