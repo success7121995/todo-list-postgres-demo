@@ -1,5 +1,6 @@
 "use client"
 
+import { useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Row from './row'; // Ensure correct import path
 import { useData, type ItemProps } from '@/src/context/DataProvider';
@@ -13,9 +14,14 @@ const Rows = () => {
   // State to handle error messages
   const [error, setError] = useState<string | null>(null);
 
+  const searchParams = useSearchParams();
+  const search = searchParams.get('search');
+
   const { fetchItems, deleteItem } = useData();
   
   useEffect(() => {
+    console.log(search);
+
     const handleFetchItems = async () => {
       try {
         setIsLoading(true);

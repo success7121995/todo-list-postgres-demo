@@ -81,6 +81,25 @@ const Details = ({ id }: DetailsProps) => {
     handletoggleItemState();
   }, [completeState]);
 
+  /**
+   * Handle the deletion of an item.
+   * Only removes the item from the UI if the deletion is successful on the server.
+   * @param id - The ID of the item to delete.
+   */
+  const handleOnDelete = async (id: string) => {
+    try {
+      const success = await deleteItem(id);
+      if (success) {
+        replace('/');
+      } else {
+        setError('Failed to delete the task.');
+      }
+    } catch (err) {
+      console.error('Error deleting item:', err);
+      setError('An unexpected error occurred while deleting the task.');
+    }
+  }
+
   // Display a loading indicator while fetching data
   if (isLoading) {
     return (
@@ -145,7 +164,7 @@ const Details = ({ id }: DetailsProps) => {
                   Cancel
                 </Button>
                 <Button
-                  onPress={() => {}}
+                  onPress={() => handleOnDelete(id)}
                   size="md"
                   className="font-publicSans text-sm bg-red-200 text-danger"
                 >

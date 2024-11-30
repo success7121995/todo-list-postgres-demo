@@ -1,11 +1,11 @@
 "use client"
 
-import { FormEvent, useRef, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { FormEvent, useRef, useEffect } from 'react';
 import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
-  DropdownSection,
   DropdownItem
 } from "@nextui-org/dropdown";
 
@@ -14,7 +14,8 @@ import SearchIcon from '@/src/public/svg/search.svg';
 import FilterIcon from '@/src/public/svg/filter.svg';
 
 const SearchBar = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { push, replace } = useRouter();
+
   const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -38,12 +39,16 @@ const SearchBar = () => {
    * Handle the search submit
    * @param e Search event
    */
-  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
+  const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     const searchValue = searchRef.current?.value.trim();
 
-    if (searchValue) console.log('Press Enter');
+    if (searchValue) {
+      push(`?search=${encodeURIComponent(searchValue)}`);
+    } else {
+      replace('/');
+    }
   };
 
   return (<>
