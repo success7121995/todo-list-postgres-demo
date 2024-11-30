@@ -122,6 +122,7 @@ const Rows = () => {
               title={item.t_title}
               isImportant={item.is_important}
               isCompleted={item.is_completed}
+              category={item?.c_name}
               onDelete={handleOnDelete}
             />
           ))}

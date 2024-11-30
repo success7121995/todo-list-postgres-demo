@@ -30,7 +30,7 @@ import CrossCircleIcon from '@/src/public/svg/cross-circle.svg';
 interface RowProps {
   id: string,
   title: string,
-  category?: 'life' | 'work' | 'family' | null,
+  category?: string | null,
   isImportant: boolean,
   isCompleted: boolean,
   onDelete?: (id: string) => void 
@@ -46,13 +46,21 @@ const Row = ({
 }: RowProps) => {
   // State to track whether it is marked as important
   const [importantState, setImportantState] = useState<boolean>(isImportant);
+  // State to track whether the task is completed
   const [completeState, setCompleteState] = useState<boolean>(isCompleted);
   // Ensure that the state update only occurs while the important or complete is switched
   const [isMounted, setIsMounted] = useState<boolean>(false);
+  // Set category
+  const [categoryColor, setCategoryColor] = useState<string | null>(category);
 
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const { push } = useRouter();
   const { toggleItemState } = useData();
+
+  useEffect(() => {
+    if (!category) return;
+    setCategoryColor(category.toLowerCase());
+  }, [category])
 
   useEffect(() => {
     // Prevent the initial toggling
@@ -88,6 +96,7 @@ const Row = ({
     handletoggleItemState();
   }, [completeState]);
 
+
   return (<>
     <li className="relative w-11/12 mx-auto border-b-[1px] border-primary py-4 flex items-center gap-x-3">
 
@@ -104,7 +113,7 @@ const Row = ({
 
       <div className="flex items-center gap-x-2">
         {/* Dot */}
-        <div className={`${category ? `bg-${category}` : 'bg-disableText'} h-[6px] w-[6px] rounded-full`}></div>
+        <div className="h-[8px] w-[8px] rounded-full" style={{ backgroundColor: category ? `var(--${categoryColor})` : 'var(--disableText)'}}></div>
 
         {/* Checkbox */}
         <button
