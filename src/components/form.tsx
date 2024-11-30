@@ -7,12 +7,18 @@ import { Input, Textarea } from '@nextui-org/input';
 import { useForm, Controller, type SubmitHandler } from 'react-hook-form';
 import { Tag } from '@/src/components';
 
-const Form = () => {
+interface FormProps {
+  action: 'insert' | 'update',
+  id?: string
+}
+
+const Form = ({ action, id }: FormProps) => {
   const [categories, setCategories] = useState<CategoryProps[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const { fetchCategories, insertItem } = useData();
+  const { fetchCategories, insertItem, fetchItem } = useData();
 
-  const { control, handleSubmit, register } = useForm<FormDataProps>({
+  const { control, handleSubmit, register, reset, formState: { errors } } = useForm<FormDataProps>({
     defaultValues: {
       category: '',
       is_important: false,
@@ -35,6 +41,11 @@ const Form = () => {
   };
 
   useEffect(() => {
+    console.log(id);
+    console.log(action);
+    /**
+     * Handle fetch categories
+     */
     const handleFetchCategories = async () => {
       const categories =  await fetchCategories();
       if (categories) {
@@ -42,8 +53,34 @@ const Form = () => {
       } 
     };
 
+    /**
+     * Fetch existing item data for update
+     */
+    const handleFetchItem = async () => {
+      try {
+        setLoading(true);
+        if (!id) return;
+        const item = await fetchItem(id);
+
+        if (item) {
+          reset({
+            category: item.c_name || undefined,
+            is_important: item.is_important,
+            title: item.t_title,
+            content: item.t_cnt,
+          });
+          console.log('hihi');
+        }
+      } catch (error) {
+        console.error('Failed to fetch item:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     handleFetchCategories();
-  }, []);
+    if (action == 'update') handleFetchItem();
+  }, [fetchCategories, fetchItem, id, action, reset]);
 
   return (<>
     <form className="mt-3 relative" onSubmit={handleSubmit(onSubmit)}>

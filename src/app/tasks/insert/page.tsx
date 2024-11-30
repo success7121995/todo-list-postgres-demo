@@ -8,7 +8,7 @@ const InsertPage = () => {
     <div>
       <BackBtn />
       
-      <Form />
+      <Form action="insert" />
     </div>
   </>)
 };

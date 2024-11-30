@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useData } from '@/src/context/DataProvider';
 import {
@@ -153,6 +153,7 @@ const Row = ({
             </DropdownItem>
             
             <DropdownItem
+              onClick={() => push(`/tasks/update/${id}`)}
               key="edit"
               textValue="edit"
               startContent={<EditIcon className="h-[16px] w-[16px]" />}

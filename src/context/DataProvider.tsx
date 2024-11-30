@@ -29,6 +29,7 @@ export interface CategoryProps {
 // Interface defining the shape of the data context
 interface DataContextState {
   fetchItems: () => Promise<ItemProps[] | undefined>,
+  fetchItem: (id: string) => Promise<ItemProps | undefined>
   fetchCategories: () => Promise<CategoryProps[] | undefined>,
   insertItem: (data: FormDataProps) => Promise<boolean>,
   toggleItemState: (id: string, handle: 'is_important' | 'is_completed', state: boolean) => Promise<void>,
@@ -48,7 +49,6 @@ export const useData = () => {
 // DataProvider component that wraps the application and provides data context
 const DataProvider = ({ children }: { children: ReactNode }) => {
   const { replace } = useRouter();
-
 
   /**
    * Fetches items from the backend API.
@@ -70,7 +70,27 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   };
 
   /**
-   * Fetches items from the backend API.
+   * Fetch item from the backend API.
+   * @returns A promise that resolves to an array of ItemProps or undefined.
+   */
+  const fetchItem = async (id: string): Promise<ItemProps | undefined> => {
+    try {
+      const res = await fetch(`/api/fetch-item/${id}`);
+      if (!res.ok) {
+        console.error('Failed to fetch item:', res.statusText);
+        return undefined;
+      }
+
+      const item: ItemProps = await res.json();
+      return item;
+    } catch (err) {
+      console.error('Error fetching item:', err);
+      return undefined;
+    }
+  };
+
+  /**
+   * Fetche items from the backend API.
    * @returns A promise that resolves to an array of ItemProps or undefined.
    */
   const fetchCategories = async (): Promise<CategoryProps[] | undefined> => {
@@ -87,7 +107,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
       return undefined;
     }
   };
-  
+
   /**
    * Insert an item
    * @param data 
@@ -170,6 +190,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   return (
     <DataContext.Provider value={{
       fetchItems,
+      fetchItem,
       fetchCategories,
       insertItem,
       toggleItemState,
