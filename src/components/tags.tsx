@@ -4,11 +4,31 @@ import { Tag } from './';
 
 const Tags = () => {
   const tags = [
-    { name: "All", color: "primary" },
-    { name: "Important", color: "important" },
-    { name: "Life", color: "life" },
-    { name: "Family", color: "family" },
-    { name: "Work", color: "work" },
+    {
+      name: 'All',
+      color: 'primary',
+      action: () => {}
+    },
+    {
+      name: 'Important',
+      color: 'important',
+      action: () => {}
+    },
+    {
+      name: 'Life',
+      color: 'life',
+      action: () => {}
+    },
+    {
+      name: 'Family',
+      color: 'family',
+      action: () => {}
+    },
+    {
+      name: 'Work',
+      color: 'work',
+      action: () => {}
+    },
   ];
 
   return (

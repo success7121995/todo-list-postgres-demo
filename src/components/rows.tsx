@@ -1,10 +1,18 @@
 "use client"
 
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Row from './row'; // Ensure correct import path
 import { useData, type ItemProps } from '@/src/context/DataProvider';
 import { ClipLoader } from "react-spinners";
+import {
+  Modal, 
+  ModalContent, 
+  ModalHeader, 
+  ModalBody, 
+  useDisclosure
+} from '@nextui-org/modal';
+import { Button } from '@nextui-org/button';
 
 const Rows = () => {
   // State to store the list of items fetched from the database
@@ -18,7 +26,10 @@ const Rows = () => {
   const search = searchParams.get('search');
   const sort = searchParams.get('sort');
 
+  const { replace } = useRouter();
+
   const { fetchItems, deleteItem, searchItems } = useData();
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
   
   useEffect(() => {
     const handleFetchItems = async () => {
@@ -43,13 +54,23 @@ const Rows = () => {
 
   useEffect(() => {
     if (!search) return;
-    const handleSearchItems = async () => {
-      const fetchedItems = await searchItems(search, sort || undefined);
 
-      if (fetchedItems && fetchedItems.length > 0 ) {
-        setItems(fetchedItems as ItemProps[]);
-      } else {
+    const handleSearchItems = async () => {
+      try {
+        setIsLoading(true);
+        const fetchedItems = await searchItems(search, sort || undefined);
         
+        console.log(fetchedItems);
+        if (fetchedItems && fetchedItems.length > 0 ) {
+          setItems(fetchedItems as ItemProps[]);
+        } else {
+          onOpen();
+        }
+      } catch (err) {
+        console.error('Error searching items:', err);
+        setError('An unexpected error occurred.');
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -110,6 +131,41 @@ const Rows = () => {
           <h4 className="font-publicSans text-base text-secondary">No Task</h4>
         </div>
       )}
+
+      {/* Error Modal for search */}
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        classNames={{
+          body: 'text-center',
+          base: 'w-2/6 min-w-[200px] max-w-[250px]',
+          closeButton: 'hover:bg-disable active:bg-white/10 text-disableText'
+        }}
+      >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                {/* Header */}
+                <ModalHeader className="flex flex-col justify-center items-center mt-4">
+                  <h5 className="font-publicSans text-darkText text-base">No Record Found</h5>
+                </ModalHeader>
+                
+                <ModalBody className="flex flex-row justify-center items-center">
+                  <Button
+                    size="sm"
+                    className="font-publicSans text-sm bg-primary text-secondary mb-[3px]"
+                    onPress={() => {
+                      onClose();
+                      replace('/');
+                    }}
+                  >
+                    Close
+                  </Button>
+                </ModalBody>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
     </>
   );
 };

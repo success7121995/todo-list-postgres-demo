@@ -26,7 +26,6 @@ export interface CategoryProps {
   c_name: string
 }
 
-// Interface defining the shape of the data context
 interface DataContextState {
   fetchItems: () => Promise<ItemProps[] | undefined>,
   fetchItem: (id: string) => Promise<ItemProps[] | undefined>
@@ -37,10 +36,8 @@ interface DataContextState {
   searchItems: (search: string, sort?: string) => Promise<ItemProps[] | undefined>
 }
 
-// Creating the data context
 const DataContext = createContext<DataContextState | undefined>(undefined);
 
-// Custom hook to use the data context
 export const useData = () => {
   const ctx = useContext(DataContext);
   if (!ctx) throw new Error('useData must be used within a DataProvider');

@@ -66,8 +66,8 @@ export const GET = async (req: Request) => {
       headers: { 'Content-Type': 'application/json'},
       status: 200
     });
-  } catch (err) {
-    return new Response(JSON.stringify(err), {
+  } catch (_) {
+    return new Response(JSON.stringify([]), {
       headers: { 'Content-Type': 'application/json'},
       status: 400
     });

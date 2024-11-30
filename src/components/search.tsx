@@ -36,8 +36,8 @@ const SearchBar = () => {
       }
     }
 
-    window.addEventListener('keydown', e => handleKeyDown(e));
-    return () => window.removeEventListener('keydown', e => handleKeyDown(e));
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   /**
