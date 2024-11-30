@@ -19,7 +19,8 @@ export const GET = async (req: Request) => {
         c.c_name, 
       t.created_at
       FROM Tasks t
-      LEFT JOIN Categories c ON c.c_id = t.c_id;
+      LEFT JOIN Categories c ON c.c_id = t.c_id
+      ORDER BY t.created_at DESC;
     `;
 
     const res = await sql(stmt);

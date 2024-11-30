@@ -34,8 +34,8 @@ export const GET = async (req: Request) => {
         orderByClause = 'ORDER BY t.created_at ASC';
         break;
       default:
-        // Default sorting by ASC
-        orderByClause = 'ORDER BY t.t_title ASC';
+      // Default sorting newest to oldest 
+      orderByClause = 'ORDER BY t.created_at DESC ;';
     }
 
     const sql = neon(`${process.env.DATABASE_URL}`);

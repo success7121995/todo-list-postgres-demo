@@ -112,7 +112,7 @@ const Row = ({
 
       <div className="flex items-center gap-x-2">
         {/* Dot */}
-        <div className="h-[8px] w-[8px] rounded-full" style={{ backgroundColor: category ? `var(--${categoryColor})` : 'var(--disableText)'}}></div>
+        <div className="h-[8px] w-[8px] rounded-full" style={{ backgroundColor: category ? `var(--${categoryColor})` : 'var(--disable-text)'}}></div>
 
         {/* Checkbox */}
         <button
