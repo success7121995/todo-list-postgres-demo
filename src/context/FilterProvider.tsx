@@ -1,31 +1,48 @@
 "use client"
 
-import { ReactNode, useContext, createContext, useState } from 'react';
+import { ReactNode, useContext, createContext, useState, useEffect } from 'react';
 
 interface FilterContextState {
-  filterItemsByCategories: (filter: FiltersProps) => void
+  filters: string[],
+  addFilter: (filter: FiltersProps) => void,
+  removeFilter: (filter: FiltersProps) => void
 }
 
-type FiltersProps = 'important' | 'life' | 'family' | 'work';
+export type FiltersProps = 'completed' | 'important' | 'life' | 'family' | 'work';
 
 const FilterContext = createContext<FilterContextState | undefined>(undefined);
 
 export const useFilter = () => {
   const ctx = useContext(FilterContext);
-  if (!ctx) return new Error('useFilter must be used within a FilterProvider');
+  if (!ctx) throw new Error('useFilter must be used within a FilterProvider');
+  return ctx;
 };
 
 const FilterProvider = ({ children }: { children: ReactNode }) => {
   // Default no filter
   const [filters, setFilters] = useState<string[]>([]);
 
-  const filterItemsByCategories = (filter: FiltersProps) => {
-    
-  };
+  useEffect(() => {
+    console.log(filters);
+  }, [filters]);
+
+  /**
+   * 
+   * @param filter 
+   */
+  const addFilter = (filter: FiltersProps) => setFilters(prev => (!prev.includes(filter) ? [...prev, filter] : prev));
+
+  /**
+   * 
+   * @param filter
+   */
+  const removeFilter = (filter: FiltersProps) => setFilters(prev => prev.filter(item => item !== filter));
 
   return (
     <FilterContext.Provider value={{
-      filterItemsByCategories
+      filters,
+      addFilter,
+      removeFilter
     }}>
       {children}
     </FilterContext.Provider>

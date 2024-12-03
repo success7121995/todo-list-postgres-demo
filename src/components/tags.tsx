@@ -1,33 +1,29 @@
 "use client"
 
 import { Tag } from './';
+import { type FiltersProps } from '@/src/context/FilterProvider';
 
 const Tags = () => {
-  const tags = [
+  const tags: { name: FiltersProps, color: string }[] = [
     {
-      name: 'All',
+      name: 'completed',
       color: 'primary',
-      action: () => {}
     },
     {
-      name: 'Important',
+      name: 'important',
       color: 'important',
-      action: () => {}
     },
     {
-      name: 'Life',
+      name: 'life',
       color: 'life',
-      action: () => {}
     },
     {
-      name: 'Family',
+      name: 'family',
       color: 'family',
-      action: () => {}
     },
     {
-      name: 'Work',
+      name: 'work',
       color: 'work',
-      action: () => {}
     },
   ];
 

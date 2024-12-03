@@ -1,25 +1,38 @@
 "use client"
 
+import { useState, useEffect } from 'react';
+import { useFilter, type FiltersProps } from '@/src/context/FilterProvider';
+
 export interface TagProps {
-  name?: string,
-  color?: string,
-  action?: () => void,
-  isDisabled?: boolean
+  name?: FiltersProps,
+  color?: string
 }
 
 const Tag = ({
   name,
-  color,
-  action,
-  isDisabled = false
+  color
 }: TagProps) => {
+  const initialIsDisabled = name ? ['important', 'completed'].includes(name) : false;
+  const [isDisabled, setIsDisabled] = useState<boolean>(initialIsDisabled);
+
+  const { addFilter, removeFilter  } = useFilter();
+
+  useEffect(() => {
+    if (!name) return;
+
+    if (isDisabled) {
+      addFilter(name);
+    } else {
+      removeFilter(name);
+    }
+  }, [isDisabled]);
 
   return (<>
     <button
       type="button"
-      onClick={action}
+      onClick={() => setIsDisabled(prev => !prev)}
       className={`
-        w-fit px-3 rounded-xl text-1xs font-publicSans
+        w-fit px-3 rounded-xl text-1xs font-publicSans capitalize
         ${isDisabled ? 'text-disableText' : 'text-darkText'}
       `}
       style={{ backgroundColor: !color || isDisabled ? 'var(--disable)' : `var(--${color})`}}
