@@ -4,28 +4,29 @@ import { useState, useEffect } from 'react';
 import { useFilter, type FiltersProps } from '@/src/context/FilterProvider';
 
 export interface TagProps {
-  name?: FiltersProps,
+  keyName?: FiltersProps,
+  name?: string,
   color?: string
 }
 
 const Tag = ({
+  keyName,
   name,
   color
 }: TagProps) => {
-  const initialIsDisabled = name ? ['important', 'completed'].includes(name) : false;
-  const [isDisabled, setIsDisabled] = useState<boolean>(initialIsDisabled);
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
-  const { addFilter, removeFilter  } = useFilter();
+  const { addFilter, removeFilter } = useFilter();
 
   useEffect(() => {
-    if (!name) return;
+    if (!keyName) return;
 
     if (isDisabled) {
-      addFilter(name);
+      removeFilter(keyName);
     } else {
-      removeFilter(name);
+      addFilter(keyName);
     }
-  }, [isDisabled]);
+}, [isDisabled]);
 
   return (<>
     <button

@@ -1,11 +1,13 @@
 "use client"
 
 import { ReactNode, useContext, createContext, useState, useEffect } from 'react';
+import { type ItemProps } from './DataProvider';
 
 interface FilterContextState {
-  filters: string[],
+  filters: FiltersProps[],
   addFilter: (filter: FiltersProps) => void,
-  removeFilter: (filter: FiltersProps) => void
+  removeFilter: (filter: FiltersProps) => void,
+  filterItems: (filters: FiltersProps[]) =>  Promise<ItemProps[] | undefined>
 }
 
 export type FiltersProps = 'completed' | 'important' | 'life' | 'family' | 'work';
@@ -20,7 +22,7 @@ export const useFilter = () => {
 
 const FilterProvider = ({ children }: { children: ReactNode }) => {
   // Default no filter
-  const [filters, setFilters] = useState<string[]>([]);
+  const [filters, setFilters] = useState<FiltersProps[]>([]);
 
   useEffect(() => {
     console.log(filters);
@@ -38,11 +40,42 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
    */
   const removeFilter = (filter: FiltersProps) => setFilters(prev => prev.filter(item => item !== filter));
 
+  /**
+   * 
+   */
+  const filterItems = async (filters: FiltersProps[]) => {
+    try {
+      const queryParams = new URLSearchParams();
+  
+      filters.forEach(filter => {
+        if (filter === 'important' || filter === 'completed') {
+          queryParams.set(filter, 'true');
+        } else if (['life', 'family', 'work'].includes(filter)) {
+          queryParams.append('category', filter);
+        }
+      });
+  
+      const queries = queryParams.toString();
+      const res = await fetch(`/api/filter-items?${queries}`);
+      if (!res.ok) {
+        console.error('Failed to filter tasks:', res.statusText);
+        return undefined;
+      }
+
+      const filteredItems: ItemProps[]  = await res.json();
+      return filteredItems;
+    } catch (err) {
+      console.error('Error filtering tasks:', err);
+      return undefined;
+    }
+  };
+
   return (
     <FilterContext.Provider value={{
       filters,
       addFilter,
-      removeFilter
+      removeFilter,
+      filterItems
     }}>
       {children}
     </FilterContext.Provider>

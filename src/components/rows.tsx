@@ -35,7 +35,7 @@ const Rows = () => {
 
   const { fetchItems, deleteItem, searchItems } = useData();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const { filters } = useFilter();
+  const { filters, filterItems } = useFilter();
 
   // Fetch all items on component mount
   useEffect(() => {
@@ -90,20 +90,30 @@ const Rows = () => {
 
   // Handle filtering items based on active filters
   useEffect(() => {
-    if (filters.length < 1) {
-      setDisplayItems(items); 
-    } else {
-      setDisplayItems(items.filter(item => {
-        const filterConditions = {
-          completed: filters.includes('completed') ? !item.is_completed : true,
-          important: filters.includes('important') ? !item.is_important : true,
-          life: filters.includes('life') ? item.c_name !== 'life' : true,
-          family: filters.includes('family') ? item.c_name !== 'family' : true,
-          work: filters.includes('work') ? item.c_name !== 'work' : true,
-        };
-        return Object.values(filterConditions).every(condition => condition === true);
-      }));
-    }
+    if (!filters) return;
+
+    const handleFilterItems = async (filters: FiltersProps[]) => {
+      if (filters.length < 1) {
+        setDisplayItems(items);
+      } else {
+        try {
+  
+          setIsLoading(true);
+          const filteredItems = await filterItems(filters);
+          if (!filteredItems) throw new Error();
+
+          setDisplayItems(filteredItems);
+  
+        } catch (err) {
+          console.error('Error searching items:', err);
+          setError('An unexpected error occurred.');
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    handleFilterItems(filters);
   }, [filters, items]);
 
   /**
@@ -116,14 +126,14 @@ const Rows = () => {
       const success = await deleteItem(id);
       if (success) {
         // Update both allItems and displayItems
-        const updatedAllItems = items.filter(item => item.t_id !== id);
-        setItems(updatedAllItems);
-        setDisplayItems(updatedAllItems.filter(item => {
-          // Re-apply filters if any
+        const updatedItems = items.filter(item => item.t_id !== id);
+        setItems(updatedItems);
+        setDisplayItems(updatedItems.filter(item => {
           return filters.every(filter => {
             if (filter === 'important') {
               return item.is_important;
             }
+
             if (['life', 'family', 'work'].includes(filter)) {
               return item.c_name === filter;
             }

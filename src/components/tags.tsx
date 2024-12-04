@@ -4,25 +4,30 @@ import { Tag } from './';
 import { type FiltersProps } from '@/src/context/FilterProvider';
 
 const Tags = () => {
-  const tags: { name: FiltersProps, color: string }[] = [
+  const tags: { keyName: FiltersProps, name: string, color: string }[] = [
     {
-      name: 'completed',
+      keyName: 'completed',
+      name: 'Completed',
       color: 'primary',
     },
     {
-      name: 'important',
+      keyName: 'important',
+      name: 'Important',
       color: 'important',
     },
     {
-      name: 'life',
+      keyName: 'life',
+      name: 'Life',
       color: 'life',
     },
     {
-      name: 'family',
+      keyName: 'family',
+      name: 'Family',
       color: 'family',
     },
     {
-      name: 'work',
+      keyName: 'work',
+      name: 'Work',
       color: 'work',
     },
   ];
@@ -31,7 +36,7 @@ const Tags = () => {
     <div className="my-3 flex justify-between items-center gap-x-4">
       {tags.map((tag, i) => (
         <div key={i}>
-          <Tag name={tag.name} color={tag.color} />
+          <Tag name={tag.name} color={tag.color} keyName={tag.keyName} />
         </div>
       ))}
     </div>

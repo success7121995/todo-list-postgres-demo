@@ -46,7 +46,7 @@ const SearchBar = () => {
    */
   const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     const searchValue = searchRef.current?.value.trim();
 
     if (searchValue) {
