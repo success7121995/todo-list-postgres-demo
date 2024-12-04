@@ -67,7 +67,7 @@ const Rows = () => {
     const handleSearchItems = async () => {
       try {
         setIsLoading(true);
-        const fetchedItems = await searchItems(search, sort || undefined);
+        const fetchedItems = await searchItems(search);
 
         if (fetchedItems && fetchedItems.length > 0 ) {
           setItems(fetchedItems as ItemProps[]);
@@ -97,13 +97,11 @@ const Rows = () => {
         setDisplayItems(items);
       } else {
         try {
-  
           setIsLoading(true);
           const filteredItems = await filterItems(filters);
           if (!filteredItems) throw new Error();
 
           setDisplayItems(filteredItems);
-  
         } catch (err) {
           console.error('Error searching items:', err);
           setError('An unexpected error occurred.');

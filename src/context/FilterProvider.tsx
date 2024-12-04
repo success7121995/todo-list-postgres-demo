@@ -5,12 +5,15 @@ import { type ItemProps } from './DataProvider';
 
 interface FilterContextState {
   filters: FiltersProps[],
+  sort: SortProps, 
   addFilter: (filter: FiltersProps) => void,
   removeFilter: (filter: FiltersProps) => void,
-  filterItems: (filters: FiltersProps[]) =>  Promise<ItemProps[] | undefined>
+  filterItems: (filters: FiltersProps[]) =>  Promise<ItemProps[] | undefined>,
+  sortItems: (sort: SortProps) => void
 }
 
 export type FiltersProps = 'completed' | 'important' | 'life' | 'family' | 'work';
+export type SortProps =  'a-z' | 'z-a' | 'o-n' | 'n-o';
 
 const FilterContext = createContext<FilterContextState | undefined>(undefined);
 
@@ -23,10 +26,7 @@ export const useFilter = () => {
 const FilterProvider = ({ children }: { children: ReactNode }) => {
   // Default no filter
   const [filters, setFilters] = useState<FiltersProps[]>([]);
-
-  useEffect(() => {
-    console.log(filters);
-  }, [filters]);
+  const [sort, setSort] = useState<SortProps>('a-z');
 
   /**
    * 
@@ -70,12 +70,20 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  /**
+   * 
+   * @param sort
+   */
+  const sortItems = (sort: SortProps) => setSort(sort);
+
   return (
     <FilterContext.Provider value={{
       filters,
+      sort,
       addFilter,
       removeFilter,
-      filterItems
+      filterItems,
+      sortItems
     }}>
       {children}
     </FilterContext.Provider>

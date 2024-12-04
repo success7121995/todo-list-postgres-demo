@@ -10,32 +10,12 @@ export const GET = async (req: Request) => {
     });
 
     const searchQuery = queries.get('search');
-    const sortQuery = queries.get('sort');
 
     if (!searchQuery || searchQuery.trim() === '') {
       return new Response(JSON.stringify({ error: 'Search query cannot be empty' }), {
         headers: { 'Content-Type': 'application/json' },
         status: 400
       });
-    }
-
-    let orderByClause = '';
-    switch (sortQuery) {
-      case 'a-z':
-        orderByClause = 'ORDER BY t.t_title ASC';
-        break;
-      case 'z-a':
-        orderByClause = 'ORDER BY t.t_title DESC';
-        break;
-      case 'o-n':
-        orderByClause = 'ORDER BY t.created_at DESC';
-        break;
-      case 'n-o':
-        orderByClause = 'ORDER BY t.created_at ASC';
-        break;
-      default:
-      // Default sorting newest to oldest 
-      orderByClause = 'ORDER BY t.created_at DESC ;';
     }
 
     const sql = neon(`${process.env.DATABASE_URL}`);
@@ -57,7 +37,6 @@ export const GET = async (req: Request) => {
       FROM Tasks t
       LEFT JOIN Categories c ON c.c_id = t.c_id
       WHERE t.t_title ILIKE $1 OR t.t_cnt ILIKE $1
-      ${orderByClause};
     `;
 
     const res = await sql(stmt, [`%${searchQuery}%`]);

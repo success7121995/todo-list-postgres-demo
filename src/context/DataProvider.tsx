@@ -191,11 +191,9 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
    * @param search
    * @param sort 
    */
-  const searchItems = async (search: string, sort?: string): Promise<ItemProps[] | undefined> => {
+  const searchItems = async (search: string): Promise<ItemProps[] | undefined> => {
     try {
-      
-      const res = await fetch(`/api/search-items?search=${encodeURIComponent(search)}${sort ? `&sort=${encodeURIComponent(sort)}` : '' }`);
-
+      const res = await fetch(`/api/search-items?search=${encodeURIComponent(search)}`);
       if (!res.ok) {
         console.error('Failed to search:', res.statusText);
         return undefined;

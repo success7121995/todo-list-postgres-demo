@@ -129,11 +129,11 @@ const Form = ({ action, id }: FormProps) => {
             control={control}
             render={({ field }) => (
               <button
-               type="button"
-               className={`
-                w-fit px-3 rounded-xl text-1xs font-publicSans capitalize
-                ${!field.value ? 'text-disableText' : 'text-darkText'}
-              `}
+                type="button"
+                className={`
+                  w-fit px-3 rounded-xl text-1xs font-publicSans capitalize
+                  ${!field.value ? 'text-disableText' : 'text-darkText'}
+                `}
                 style={{ backgroundColor: !field.value ? 'var(--disable)' : `var(--important)`}}
                 onClick={() => field.onChange(!field.value)}
               >
