@@ -165,7 +165,9 @@ const Rows = () => {
       )}
       {displayItems.length > 0 ? (
         <ul className="mt-3">
-          {displayItems.map(item => (
+          {displayItems
+            .sort((a, b) => a.t_title.localeCompare(b.t_title))
+            .map(item => (
             <Row
               key={item.t_id}
               id={item.t_id}

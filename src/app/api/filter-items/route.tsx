@@ -16,7 +16,7 @@ export const GET = async (req: Request) => {
     const important: string | null = queries.get('important');
     const completed: string | null = queries.get('completed');
 
-    let conditions: string[] = [];
+    const conditions: string[] = [];
     let params: string[] = [];
 
     // Add conditions based on 'important' and 'completed'
