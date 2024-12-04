@@ -108,7 +108,7 @@ const Form = ({ action, id }: FormProps) => {
               >
                 {categories.map(categories => (
                   <SelectItem key={categories.c_id} textValue={categories.c_name}>
-                    <p className="text-xs font-publicSans text-darkText">{categories.c_name}</p>
+                    <p className="text-xs font-publicSans text-darkText capitalize">{categories.c_name}</p>
                   </SelectItem>
                 ))}
               </Select>
@@ -128,12 +128,17 @@ const Form = ({ action, id }: FormProps) => {
             name="is_important"
             control={control}
             render={({ field }) => (
-              <Tag
-                name="Important"
-                color="important"
-                isDisabled={!field.value}
-                action={() => field.onChange(!field.value)}
-              />
+              <button
+               type="button"
+               className={`
+                w-fit px-3 rounded-xl text-1xs font-publicSans capitalize
+                ${!field.value ? 'text-disableText' : 'text-darkText'}
+              `}
+                style={{ backgroundColor: !field.value ? 'var(--disable)' : `var(--important)`}}
+                onClick={() => field.onChange(!field.value)}
+              >
+                Important
+              </button>
             )}
           />
         </div>

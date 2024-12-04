@@ -6,13 +6,15 @@ import { useFilter, type FiltersProps } from '@/src/context/FilterProvider';
 export interface TagProps {
   keyName?: FiltersProps,
   name?: string,
-  color?: string
+  color?: string,
+  action?: () => void
 }
 
 const Tag = ({
   keyName,
   name,
-  color
+  color,
+  action
 }: TagProps) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
