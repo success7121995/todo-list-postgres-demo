@@ -12,12 +12,13 @@ export interface FormDataProps {
 
 // Interface for individual item properties
 export interface ItemProps {
-  t_id: string;
-  t_title: string;
-  t_cnt: string | null;
-  is_completed: boolean;
-  is_important: boolean;
-  c_name: string | null;
+  t_id: string,
+  t_title: string,
+  t_cnt: string | null,
+  is_completed: boolean,
+  is_important: boolean,
+  c_name: string | null,
+  created_at: Date
 }
 
 // Interface for categories

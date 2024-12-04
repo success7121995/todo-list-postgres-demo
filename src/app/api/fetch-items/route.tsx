@@ -17,7 +17,7 @@ export const GET = async (req: Request) => {
         t.is_completed, 
         t.is_important, 
         c.c_name, 
-      t.created_at
+        t.created_at
       FROM Tasks t
       LEFT JOIN Categories c ON c.c_id = t.c_id
       ORDER BY t.created_at DESC;

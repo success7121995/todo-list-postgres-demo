@@ -28,6 +28,10 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
   const [filters, setFilters] = useState<FiltersProps[]>([]);
   const [sort, setSort] = useState<SortProps>('a-z');
 
+  useEffect(() => {
+    console.log(sort);
+  }, [sort]);
+
   /**
    * 
    * @param filter 
@@ -74,7 +78,11 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
    * 
    * @param sort
    */
-  const sortItems = (sort: SortProps) => setSort(sort);
+  const sortItems = (sort: SortProps) => {
+
+    console.log(sort)
+    setSort(sort);
+  };
 
   return (
     <FilterContext.Provider value={{

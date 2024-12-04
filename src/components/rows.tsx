@@ -37,6 +37,21 @@ const Rows = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { filters, filterItems } = useFilter();
 
+  // Sorting
+  useEffect(() => {
+    if (!items || items.length < 1) return;
+
+    // console.log(sort);
+    switch(sort) {
+      case 'a-z': return setDisplayItems([...items].sort((a, b) => b.t_title > a.t_title ? 1 : -1));
+      case 'z-a': return setDisplayItems([...items].sort((a, b) => a.t_title > b.t_title ? 1 : -1));
+      case 'n-o': return setDisplayItems([...items].sort((a, b) => a.created_at > b.created_at ? 1 : -1));
+      case 'o-n': return setDisplayItems([...items].sort((a, b) => b.created_at > a.created_at ? 1 : -1));
+    }
+
+    setDisplayItems([...items].sort((a, b) => b.t_title > a.t_title ? 1 : -1))
+  }, [items, sort, filters]);
+
   // Fetch all items on component mount
   useEffect(() => {
     const handleFetchItems = async () => {
@@ -165,9 +180,7 @@ const Rows = () => {
       )}
       {displayItems.length > 0 ? (
         <ul className="mt-3">
-          {displayItems
-            .sort((a, b) => a.t_title.localeCompare(b.t_title))
-            .map(item => (
+          {displayItems.map(item => (
             <Row
               key={item.t_id}
               id={item.t_id}
