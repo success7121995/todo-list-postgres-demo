@@ -1,88 +1,129 @@
-"use client"
+'use client';
 
 import { ReactNode, useContext, createContext, useState, useEffect } from 'react';
-import { type ItemProps } from './DataProvider';
-
-interface FilterContextState {
-  filters: FiltersProps[],
-  sort: SortProps, 
-  addFilter: (filter: FiltersProps) => void,
-  removeFilter: (filter: FiltersProps) => void,
-  filterItems: (filters: FiltersProps[]) =>  Promise<ItemProps[] | undefined>,
-  sortItems: (sort: SortProps) => void
-}
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export type FiltersProps = 'completed' | 'important' | 'life' | 'family' | 'work';
-export type SortProps =  'a-z' | 'z-a' | 'o-n' | 'n-o';
+export type SortProps = 'a-z' | 'z-a' | 'o-n' | 'n-o';
+
+interface FilterContextState {
+  filters: FiltersProps[];
+  sort: SortProps;
+  addFilter: (filter: FiltersProps) => void;
+  removeFilter: (filter: FiltersProps) => void;
+  toggleFilter: (filter: FiltersProps) => void;
+  setSort: (sort: SortProps) => void;
+}
 
 const FilterContext = createContext<FilterContextState | undefined>(undefined);
 
 export const useFilter = () => {
-  const ctx = useContext(FilterContext);
-  if (!ctx) throw new Error('useFilter must be used within a FilterProvider');
-  return ctx;
+  const context = useContext(FilterContext);
+  if (!context) {
+    throw new Error('useFilter must be used within a FilterProvider');
+  }
+  return context;
 };
 
 const FilterProvider = ({ children }: { children: ReactNode }) => {
-  // Default no filter
-  const [filters, setFilters] = useState<FiltersProps[]>([]);
-  const [sort, setSort] = useState<SortProps>('a-z');
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
+  const [filters, setFilters] = useState<FiltersProps[]>([]);
+  const [sort, setSortState] = useState<SortProps>('a-z');
+
+  // Initialize filters and sort from URL on mount or when searchParams change
   useEffect(() => {
-    console.log(sort);
-  }, [sort]);
+    const initialFilters: FiltersProps[] = [];
+    const initialSort = (searchParams.get('sort') as SortProps) || 'a-z';
+
+    // Extract filters from URL
+    if (searchParams.has('important') && searchParams.get('important') === 'true') {
+      initialFilters.push('important');
+    }
+    if (searchParams.has('completed') && searchParams.get('completed') === 'true') {
+      initialFilters.push('completed');
+    }
+    // Categories
+    const categories = searchParams.getAll('category') as FiltersProps[];
+    initialFilters.push(...categories.filter(cat => ['life', 'family', 'work'].includes(cat)));
+
+    setFilters(initialFilters);
+    setSortState(initialSort);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   /**
-   * 
+   * Update the URL search parameters based on current filters and sort.
+   */
+  const updateURL = (updatedFilters: FiltersProps[], updatedSort: SortProps) => {
+    const params = new URLSearchParams();
+
+    // Set search parameters based on filters
+    updatedFilters.forEach(filter => {
+      if (filter === 'important' || filter === 'completed') {
+        params.set(filter, 'true');
+      } else if (['life', 'family', 'work'].includes(filter)) {
+        params.append('category', filter);
+      }
+    });
+
+    // Set sort parameter
+    if (updatedSort) {
+      params.set('sort', updatedSort);
+    }
+
+    const queryString = params.toString();
+    router.push(queryString ? `?${queryString}` : '/');
+  };
+
+  /**
+   * Add a filter
    * @param filter 
    */
-  const addFilter = (filter: FiltersProps) => setFilters(prev => (!prev.includes(filter) ? [...prev, filter] : prev));
-
-  /**
-   * 
-   * @param filter
-   */
-  const removeFilter = (filter: FiltersProps) => setFilters(prev => prev.filter(item => item !== filter));
-
-  /**
-   * 
-   */
-  const filterItems = async (filters: FiltersProps[]) => {
-    try {
-      const queryParams = new URLSearchParams();
-  
-      filters.forEach(filter => {
-        if (filter === 'important' || filter === 'completed') {
-          queryParams.set(filter, 'true');
-        } else if (['life', 'family', 'work'].includes(filter)) {
-          queryParams.append('category', filter);
-        }
-      });
-  
-      const queries = queryParams.toString();
-      const res = await fetch(`/api/filter-items?${queries}`);
-      if (!res.ok) {
-        console.error('Failed to filter tasks:', res.statusText);
-        return undefined;
+  const addFilter = (filter: FiltersProps) => {
+    setFilters(prev => {
+      if (!prev.includes(filter)) {
+        return [...prev, filter];
       }
-
-      const filteredItems: ItemProps[]  = await res.json();
-      return filteredItems;
-    } catch (err) {
-      console.error('Error filtering tasks:', err);
-      return undefined;
-    }
+      return prev;
+    });
   };
 
   /**
-   * 
-   * @param sort
+   * Remove a filter
+   * @param filter 
    */
-  const sortItems = (sort: SortProps) => {
-
-    console.log(sort)
-    setSort(sort);
+  const removeFilter = (filter: FiltersProps) => {
+    setFilters(prev => prev.filter(item => item !== filter));
   };
+
+  /**
+   * Toggle a filter
+   * @param filter 
+   */
+  const toggleFilter = (filter: FiltersProps) => {
+    setFilters(prev => {
+      if (prev.includes(filter)) {
+        return prev.filter(item => item !== filter);
+      } else {
+        return [...prev, filter];
+      }
+    });
+  };
+
+  /**
+   * Set the sort option
+   * @param newSort 
+   */
+  const setSort = (newSort: SortProps) => {
+    setSortState(newSort);
+  };
+
+  // Sync URL when filters or sort change
+  useEffect(() => {
+    updateURL(filters, sort);
+  }, [filters, sort]);
 
   return (
     <FilterContext.Provider value={{
@@ -90,14 +131,12 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
       sort,
       addFilter,
       removeFilter,
-      filterItems,
-      sortItems
+      toggleFilter,
+      setSort
     }}>
       {children}
     </FilterContext.Provider>
-  )
+  );
 };
 
 export default FilterProvider;
-
-

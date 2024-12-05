@@ -1,12 +1,10 @@
-// Rows.tsx
-
-'use client'
+'use client';
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Row from './row'; // Ensure correct import path
 import { useData, type ItemProps } from '@/src/context/DataProvider';
-import { useFilter, FiltersProps } from '@/src/context/FilterProvider';
+import { useFilter, FiltersProps, SortProps } from '@/src/context/FilterProvider';
 import { ClipLoader } from "react-spinners";
 import {
   Modal, 
@@ -17,11 +15,15 @@ import {
 } from '@nextui-org/modal';
 import { Button } from '@nextui-org/button';
 
+export interface QueriesProps {
+  search?: string | null;
+  filters?: FiltersProps[] | null;
+  sort?: SortProps;
+}
+
 const Rows = () => {
   // State to store the complete list of items fetched from the database
   const [items, setItems] = useState<ItemProps[]>([]);
-  // State to store the list of items to display after filtering
-  const [displayItems, setDisplayItems] = useState<ItemProps[]>([]);
   // State to track the loading status
   const [isLoading, setIsLoading] = useState<boolean>(true);
   // State to handle error messages
@@ -29,105 +31,35 @@ const Rows = () => {
 
   const searchParams = useSearchParams();
   const search = searchParams.get('search');
-  const sort = searchParams.get('sort');
+  const sort = (searchParams.get('sort') ?? 'a-z') as SortProps;
 
   const { replace } = useRouter();
 
-  const { fetchItems, deleteItem, searchItems } = useData();
+  const { fetchItems, deleteItem } = useData();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const { filters, filterItems } = useFilter();
+  const { filters } = useFilter();
 
-  // Sorting
+  // Fetch all items when search, sort, or filters change
   useEffect(() => {
-    if (!items || items.length < 1) return;
-
-    // console.log(sort);
-    switch(sort) {
-      case 'a-z': return setDisplayItems([...items].sort((a, b) => b.t_title > a.t_title ? 1 : -1));
-      case 'z-a': return setDisplayItems([...items].sort((a, b) => a.t_title > b.t_title ? 1 : -1));
-      case 'n-o': return setDisplayItems([...items].sort((a, b) => a.created_at > b.created_at ? 1 : -1));
-      case 'o-n': return setDisplayItems([...items].sort((a, b) => b.created_at > a.created_at ? 1 : -1));
-    }
-
-    setDisplayItems([...items].sort((a, b) => b.t_title > a.t_title ? 1 : -1))
-  }, [items, sort, filters]);
-
-  // Fetch all items on component mount
-  useEffect(() => {
-    const handleFetchItems = async () => {
-      try {
-        setIsLoading(true);
-        const fetchedItems = await fetchItems();
-        if (fetchedItems) {
-          setItems(fetchedItems);
-          setDisplayItems(fetchedItems);
-        } else {
-          setError('Failed to fetch items.');
-        }
-      } catch (err) {
-        console.error('Error fetching items:', err);
-        setError('An unexpected error occurred.');
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
     handleFetchItems();
-  }, [fetchItems]);
+  }, [search, sort, filters]);
 
-  // Handle searching items based on search parameters
-  useEffect(() => {
-    if (!search) return;
-
-    const handleSearchItems = async () => {
-      try {
-        setIsLoading(true);
-        const fetchedItems = await searchItems(search);
-
-        if (fetchedItems && fetchedItems.length > 0 ) {
-          setItems(fetchedItems as ItemProps[]);
-          setDisplayItems(fetchedItems as ItemProps[]);
-        } else {
-          setItems([]); // Clear the complete list if no results
-          setDisplayItems([]);
-          onOpen();
-        }
-      } catch (err) {
-        console.error('Error searching items:', err);
-        setError('An unexpected error occurred.');
-      } finally {
-        setIsLoading(false);
-      }
+  /**
+   * Fetches items based on current search, sort, and filter configurations.
+   */
+  const handleFetchItems = async () => {
+    try {
+      setIsLoading(true);
+      const filterValues = filters ? filters.map(f => f.toLowerCase()) : null;
+      const fetchedItems = await fetchItems({ search, sort, filters });
+      if (fetchedItems) setItems(fetchedItems);
+    } catch (err) {
+      console.error('Error fetching items:', err);
+      setError('An unexpected error occurred.');
+    } finally {
+      setIsLoading(false);
     }
-
-    handleSearchItems();
-  }, [search, sort, searchItems, onOpen]);
-
-  // Handle filtering items based on active filters
-  useEffect(() => {
-    if (!filters) return;
-
-    const handleFilterItems = async (filters: FiltersProps[]) => {
-      if (filters.length < 1) {
-        setDisplayItems(items);
-      } else {
-        try {
-          setIsLoading(true);
-          const filteredItems = await filterItems(filters);
-          if (!filteredItems) throw new Error();
-
-          setDisplayItems(filteredItems);
-        } catch (err) {
-          console.error('Error searching items:', err);
-          setError('An unexpected error occurred.');
-        } finally {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    handleFilterItems(filters);
-  }, [filters, items]);
+  };
 
   /**
    * Handles the deletion of an item.
@@ -141,18 +73,6 @@ const Rows = () => {
         // Update both allItems and displayItems
         const updatedItems = items.filter(item => item.t_id !== id);
         setItems(updatedItems);
-        setDisplayItems(updatedItems.filter(item => {
-          return filters.every(filter => {
-            if (filter === 'important') {
-              return item.is_important;
-            }
-
-            if (['life', 'family', 'work'].includes(filter)) {
-              return item.c_name === filter;
-            }
-            return true;
-          });
-        }));
       } else {
         setError('Failed to delete the task.');
       }
@@ -178,9 +98,9 @@ const Rows = () => {
           {error}
         </div>
       )}
-      {displayItems.length > 0 ? (
+      {items.length > 0 ? (
         <ul className="mt-3">
-          {displayItems.map(item => (
+          {items.map(item => (
             <Row
               key={item.t_id}
               id={item.t_id}

@@ -2,6 +2,7 @@
 
 import { ReactNode, useContext, createContext } from 'react';
 import { useRouter } from 'next/navigation';
+import { FiltersProps, SortProps } from './FilterProvider';
 
 export interface FormDataProps {
   category?: string,
@@ -27,8 +28,14 @@ export interface CategoryProps {
   c_name: string
 }
 
+export interface QueriesProps {
+  search?: string | null,
+  filters?: FiltersProps[] | null,
+  sort?: SortProps
+}
+
 interface DataContextState {
-  fetchItems: () => Promise<ItemProps[] | undefined>,
+  fetchItems: ({ search, sort , filters }: QueriesProps) => Promise<ItemProps[] | undefined>,
   fetchItem: (id: string) => Promise<ItemProps[] | undefined>
   fetchCategories: () => Promise<CategoryProps[] | undefined>,
   insertItem: (data: FormDataProps) => Promise<boolean>,
@@ -53,13 +60,42 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
    * Fetches items from the backend API.
    * @returns A promise that resolves to an array of ItemProps or undefined.
    */
-  const fetchItems = async (): Promise<ItemProps[] | undefined> => {
+  const fetchItems = async ({ search = null, sort = 'a-z', filters = null }: QueriesProps): Promise<ItemProps[] | undefined> => {
     try {
-      const res = await fetch('/api/fetch-items');
+      let endpoint = '/api/fetch-items';
+      const queryParams = new URLSearchParams();
+  
+      if (search) {
+        queryParams.set('search', search);
+      }
+  
+      if (sort) {
+        queryParams.set('sort', sort);
+      }
+  
+      if (filters) {
+        filters.forEach(filter => {
+          if (filter === 'important' || filter === 'completed') {
+            queryParams.set(filter, 'true');
+          } else if (['life', 'family', 'work'].includes(filter)) {
+            queryParams.append('category', filter);
+          }
+        });
+      }
+  
+      const queryString = queryParams.toString();
+      if (queryString) {
+        endpoint += `?${queryString}`;
+      }
+  
+      console.log(`Fetching from: ${endpoint}`);
+  
+      const res = await fetch(endpoint);
       if (!res.ok) {
         console.error('Failed to fetch items:', res.statusText);
         return undefined;
       }
+  
       const items: ItemProps[] = await res.json();
       return items;
     } catch (err) {
