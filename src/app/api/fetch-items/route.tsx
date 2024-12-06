@@ -34,7 +34,7 @@ export const GET = async (req: Request) => {
 
     const whereClauses: string[] = [];
     // Array to hold parameters
-    const params: any[] = [];
+    const params = [];
 
     if (search) {
       params.push(`%${search}%`);

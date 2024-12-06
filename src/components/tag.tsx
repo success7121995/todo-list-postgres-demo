@@ -27,7 +27,6 @@ const Tag = ({
 
   const [isDisabled, setIsDisabled] = useState<boolean>(handleTagToggle());
 
-
   useEffect(() => {
     if (!keyName) return;
 
@@ -38,7 +37,7 @@ const Tag = ({
       addFilter(keyName);
     }
   }, [isDisabled]);
-
+  
   return (<>
     <button
       type="button"

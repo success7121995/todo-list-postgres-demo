@@ -61,7 +61,7 @@ const Details = ({ id }: DetailsProps) => {
     }
 
     handleFetchItems();
-  }, [fetchItem]);
+  }, [fetchItem, id]);
 
   useEffect(() => {
     // Prevent the initial toggling
@@ -79,7 +79,7 @@ const Details = ({ id }: DetailsProps) => {
     };
 
     handletoggleItemState();
-  }, [completeState]);
+  }, [completeState, id]);
 
   /**
    * Handle the deletion of an item.

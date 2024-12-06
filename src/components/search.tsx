@@ -18,7 +18,7 @@ type Sort = 'a-z' | 'z-a' | 'o-n' | 'n-o' | undefined;
 
 const SearchBar = () => {
   const { setSort } = useFilter();
-  const router = useRouter();
+  const { push } = useRouter();
   const searchParams = useSearchParams();
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -57,8 +57,7 @@ const SearchBar = () => {
     }
 
     const queryString = params.toString();
-    console.log(queryString);
-    router.push(queryString ? `?${queryString}` : '/');
+    push(queryString ? `?${queryString}` : '/');
   };
 
   return (

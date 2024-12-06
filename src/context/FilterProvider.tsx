@@ -26,7 +26,7 @@ export const useFilter = () => {
 };
 
 const FilterProvider = ({ children }: { children: ReactNode }) => {
-  const router = useRouter();
+  const { push } = useRouter();
   const searchParams = useSearchParams();
 
   const [filters, setFilters] = useState<FiltersProps[]>([]);
@@ -48,7 +48,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
    * Extract filters to a new array
    */
   const extractFilters = (searchParams: ReadonlyURLSearchParams): FiltersProps[] => {
-    let initialFilters: FiltersProps[] = [];
+    const initialFilters: FiltersProps[] = [];
 
     if (searchParams.has('important') && searchParams.get('important') === 'true') {
       initialFilters.push('important');
@@ -92,7 +92,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const queryString = params.toString();
-    router.push(queryString ? `?${queryString}` : '/');
+    push(queryString ? `?${queryString}` : '/');
   };
 
   /**
