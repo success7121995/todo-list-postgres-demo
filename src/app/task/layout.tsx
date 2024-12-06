@@ -8,11 +8,11 @@ const TaskLayout = ({
   children: React.ReactNode;
 }>) => {
   return (
-      <Suspense fallback={<ClipLoader size={20} color="var(--primary)" />}>
-        <FilterProvider>
-          { children }
+    <Suspense fallback={<ClipLoader size={20} color="var(--primary)" />}>
+      <FilterProvider>
+        { children }
       </FilterProvider>
-      </Suspense>
+    </Suspense>
   );
 };
 
