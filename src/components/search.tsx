@@ -55,7 +55,7 @@ const SearchBar = () => {
     }
 
     const queryString = params.toString();
-    push(queryString ? `?${queryString}` : '/');
+    push(queryString ? `?${queryString}` : '/task');
   };
 
   return (
