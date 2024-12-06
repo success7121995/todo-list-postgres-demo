@@ -5,7 +5,6 @@ import { ItemProps, useData, type CategoryProps, type FormDataProps } from '@/sr
 import { Select, SelectItem } from '@nextui-org/select';
 import { Input, Textarea } from '@nextui-org/input';
 import { useForm, Controller, type SubmitHandler } from 'react-hook-form';
-import { Tag } from '@/src/components';
 
 interface FormProps {
   action: 'insert' | 'update',
@@ -23,7 +22,7 @@ const Form = ({ action, id, data }: FormProps) => {
     defaultValues: {
       category: '',
       is_important: false,
-      title: '',
+      title: data ? data.t_title : '',
       content: '',
     },
   });
