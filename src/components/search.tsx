@@ -14,8 +14,6 @@ import {
 import SearchIcon from '@/src/public/svg/search.svg';
 import FilterIcon from '@/src/public/svg/filter.svg';
 
-type Sort = 'a-z' | 'z-a' | 'o-n' | 'n-o' | undefined;
-
 const SearchBar = () => {
   const { setSort } = useFilter();
   const { push } = useRouter();

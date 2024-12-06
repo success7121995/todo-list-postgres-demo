@@ -68,7 +68,6 @@ const Details = ({ id }: DetailsProps) => {
     if (!isMounted || completeState == undefined) return;
 
     const handletoggleItemState = async () => {
-      console.log('hihihi')
       try {
         await toggleItemState(id, 'is_completed', completeState);
       } catch (err) {
@@ -84,7 +83,7 @@ const Details = ({ id }: DetailsProps) => {
   /**
    * Handle the deletion of an item.
    * Only removes the item from the UI if the deletion is successful on the server.
-   * @param id - The ID of the item to delete.
+   * @param id
    */
   const handleOnDelete = async (id: string) => {
     try {

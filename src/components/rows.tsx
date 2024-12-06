@@ -2,18 +2,10 @@
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import Row from './row'; // Ensure correct import path
+import Row from './row';
 import { useData, type ItemProps } from '@/src/context/DataProvider';
 import { useFilter, FiltersProps, SortProps } from '@/src/context/FilterProvider';
 import { ClipLoader } from "react-spinners";
-import {
-  Modal, 
-  ModalContent, 
-  ModalHeader, 
-  ModalBody, 
-  useDisclosure
-} from '@nextui-org/modal';
-import { Button } from '@nextui-org/button';
 
 export interface QueriesProps {
   search?: string | null;
@@ -31,12 +23,9 @@ const Rows = () => {
 
   const searchParams = useSearchParams();
   const search = searchParams.get('search');
-  const sort = (searchParams.get('sort') ?? 'a-z') as SortProps;
-
-  const { replace } = useRouter();
+  const sort = (searchParams.get('sort') ?? 'n-o') as SortProps;
 
   const { fetchItems, deleteItem } = useData();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { filters } = useFilter();
 
   // Fetch all items when search, sort, or filters change
@@ -50,7 +39,6 @@ const Rows = () => {
   const handleFetchItems = async () => {
     try {
       setIsLoading(true);
-      const filterValues = filters ? filters.map(f => f.toLowerCase()) : null;
       const fetchedItems = await fetchItems({ search, sort, filters });
       if (fetchedItems) setItems(fetchedItems);
     } catch (err) {
@@ -117,41 +105,6 @@ const Rows = () => {
           <h4 className="font-publicSans text-base text-secondary">No Task</h4>
         </div>
       )}
-
-      {/* Error Modal for search */}
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        classNames={{
-          body: 'text-center',
-          base: 'w-2/6 min-w-[200px] max-w-[250px]',
-          closeButton: 'hover:bg-disable active:bg-white/10 text-disable-text'
-        }}
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              {/* Header */}
-              <ModalHeader className="flex flex-col justify-center items-center mt-4">
-                <h5 className="font-publicSans text-dark-text text-base">No Record Found</h5>
-              </ModalHeader>
-              
-              <ModalBody className="flex flex-row justify-center items-center">
-                <Button
-                  size="sm"
-                  className="font-publicSans text-sm bg-primary text-secondary mb-[3px]"
-                  onPress={() => {
-                    onClose();
-                    replace('/');
-                  }}
-                >
-                  Close
-                </Button>
-              </ModalBody>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
     </>
   );
 };
