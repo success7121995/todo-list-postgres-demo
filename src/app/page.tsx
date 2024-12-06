@@ -2,6 +2,6 @@
 
 import { redirect } from 'next/navigation'
 
-const Redirect = () => redirect('/tasks');
+const Redirect = () => {};
 
 export default Redirect;
