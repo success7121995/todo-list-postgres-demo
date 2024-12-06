@@ -7,11 +7,6 @@ import { ClipLoader } from "react-spinners";
 import PlugIcon from '@/src/public/svg/plus.svg';
 
 const Home = () => {
-  const Loading = () => (
-    <div className="mt-[50%] flex justify-center items-center">
-      <ClipLoader size={20} color="var(--primary)" />
-    </div>
-  );
 
   return (<>
     <h1 className="font-tangerine text-5xl text-secondary text-center mt-10">Tasks</h1>
@@ -34,7 +29,7 @@ const Home = () => {
       <Tags />
 
       {/* Task List */}
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<ClipLoader size={20} color="var(--primary)" />}>
         <Rows />
       </Suspense>
     </div>

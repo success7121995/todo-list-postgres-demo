@@ -1,7 +1,16 @@
-// Navigate to /tasks
+import { Suspense } from "react";
+import Link from "next/link";
+import { SearchBar, Tags, Rows} from "@/src/components";
+import { ClipLoader } from "react-spinners";
 
-import { redirect } from 'next/navigation'
+// SVG
+import PlugIcon from '@/src/public/svg/plus.svg';
 
-const Redirect = () => redirect('/tasks');
+const Home = () => {
 
-export default Redirect;
+  return (<>
+
+  </>);
+};
+
+export default Home;

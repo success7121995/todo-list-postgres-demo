@@ -1,7 +1,9 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import '@/src/public/styles/globals.css';
-import { DataProvider } from '@/src/context';
+import { DataProvider, FilterProvider } from '@/src/context';
+import { ClipLoader } from "react-spinners";
 
 const geistSans = localFont({
   src: '../public/fonts/GeistVF.woff',
@@ -49,28 +51,32 @@ const RootLayout = ({
 }>) => {
   return (
     <DataProvider>
-      <html lang="en">
-        <body
-          className={`
-            ${geistSans.variable}
-            ${geistMono.variable}
-            ${tangerineRegular.variable}
-            ${tangerineBold.variable}
-            ${publicSans.variable}
-            ${publicSansItalic.variable}
-            antialiased
-            bg-primary
-          `}
-        > 
-          <div className="h-screen w-screen flex justify-center items-center">
-            <div className="bg-white h-[550px] w-[350px] md:w-[450px] md:h-[623px] rounded-[30px] min-w-[367px]">
-              <div className="w-[85%] mx-auto">
-                {children}
+      <Suspense fallback={<ClipLoader size={20} color="var(--primary)" />}>
+        <FilterProvider>
+          <html lang="en">
+            <body
+              className={`
+                ${geistSans.variable}
+                ${geistMono.variable}
+                ${tangerineRegular.variable}
+                ${tangerineBold.variable}
+                ${publicSans.variable}
+                ${publicSansItalic.variable}
+                antialiased
+                bg-primary
+              `}
+            > 
+              <div className="h-screen w-screen flex justify-center items-center">
+                <div className="bg-white h-[550px] w-[350px] md:w-[450px] md:h-[623px] rounded-[30px] min-w-[367px]">
+                  <div className="w-[85%] mx-auto">
+                    {children}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </body>
-      </html>
+            </body>
+          </html>
+      </FilterProvider>
+      </Suspense>
     </DataProvider>
   );
 };
