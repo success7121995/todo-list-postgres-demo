@@ -1,16 +1,5 @@
-import { Suspense } from "react";
-import Link from "next/link";
-import { SearchBar, Tags, Rows} from "@/src/components";
-import { ClipLoader } from "react-spinners";
+import { redirect } from 'next/navigation'
 
-// SVG
-import PlugIcon from '@/src/public/svg/plus.svg';
+const Redirect = () => redirect('/task');
 
-const Home = () => {
-
-  return (<>
-
-  </>);
-};
-
-export default Home;
+export default Redirect;
