@@ -185,10 +185,10 @@ const Details = ({ id }: DetailsProps) => {
     {items && items.length === 1 && items.map(item => (
       <div key={item.t_id} className="mt-4">
         {/* Title */}
-        <h1 className="font-publicSans text-secondary">{item.t_title}</h1>
+        <h1 className="font-publicSans text-secondary truncate">{item.t_title}</h1>
 
         {/* Content */}
-        <article className="font-publicSans text-xs text-darkText">{item.t_cnt}</article>
+        <article className="font-publicSans text-xs text-darkText h-[500px] bg-black truncate">{item.t_cnt}</article>
       </div>
     ))}
   </>);
