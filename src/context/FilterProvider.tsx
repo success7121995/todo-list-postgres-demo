@@ -107,7 +107,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const queryString = params.toString();
-    push(queryString ? `?${queryString}` : '/');
+    push(queryString ? `?${queryString}` : '/task');
   };
 
   /**

@@ -1,9 +1,7 @@
-import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import '@/src/public/styles/globals.css';
-import { DataProvider, FilterProvider } from '@/src/context';
-import { ClipLoader } from "react-spinners";
+import { DataProvider } from '@/src/context';
 
 const geistSans = localFont({
   src: '../public/fonts/GeistVF.woff',
