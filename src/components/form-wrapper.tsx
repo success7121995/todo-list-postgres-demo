@@ -11,7 +11,7 @@ interface FormWrapperProps {
 
 const FormWrapper = ({ id }: FormWrapperProps) => {
   // State to store the list of items fetched from the database
-  const [item, setItem] = useState<ItemProps>();
+  const [items, setItems] = useState<ItemProps[]>([]);
   // State to track the loading status
   const [isLoading, setIsLoading] = useState<boolean>(true);
   // State to handle error messages
@@ -25,7 +25,7 @@ const FormWrapper = ({ id }: FormWrapperProps) => {
         setIsLoading(true);
         const fetchedItem = await fetchItem(id);
         if (fetchedItem) {
-          setItem(fetchedItem);
+          setItems(fetchedItem);
 
         } else {
           setError('Failed to fetch item.');
@@ -51,8 +51,8 @@ const FormWrapper = ({ id }: FormWrapperProps) => {
   }
 
   return (<>
-      {item ? (
-        <Form action="update" id={id} data={item} />
+      {items ? (
+        items.map(item => <Form action="update" id={id} data={item} />)
       ) : (
         <div className="rounded-[10px] w-4/6 mx-auto px-3 py-2 font-publicSans text-xs text-center text-danger mt-4 bg-red-100">
           {error || 'No data available.'}

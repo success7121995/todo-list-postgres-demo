@@ -25,7 +25,7 @@ interface DetailsProps {
 
 const Details = ({ id }: DetailsProps) => {
   // State to store the list of items fetched from the database
-  const [item, setItem] = useState<ItemProps>();
+  const [items, setItems] = useState<ItemProps[]>();
   // State to track the loading status
   const [isLoading, setIsLoading] = useState<boolean>(true);
   // State to handle error messages
@@ -45,10 +45,10 @@ const Details = ({ id }: DetailsProps) => {
         setIsLoading(true);
         const fetchedItem = await fetchItem(id);
         if (fetchedItem) {
-          setItem(fetchedItem);
+          setItems(fetchedItem);
 
           // Update the complete state
-          if (fetchedItem) setCompleteState(fetchedItem.is_completed);
+          if (fetchedItem.length == 1) fetchedItem.map(item => setCompleteState(item.is_completed));
         } else {
           setError('Failed to fetch item.');
         }
@@ -61,7 +61,7 @@ const Details = ({ id }: DetailsProps) => {
     }
 
     handleFetchItems();
-  }, [fetchItem, id]);
+  }, []);
 
   useEffect(() => {
     // Prevent the initial toggling
@@ -182,7 +182,7 @@ const Details = ({ id }: DetailsProps) => {
         </div>
     )}
 
-    {item && (
+    {items && items.length === 1 && items.map(item => (
       <div key={item.t_id} className="mt-4">
         {/* Title */}
         <h1 className="font-publicSans text-secondary">{item.t_title}</h1>
@@ -190,7 +190,7 @@ const Details = ({ id }: DetailsProps) => {
         {/* Content */}
         <article className="font-publicSans text-xs text-darkText">{item.t_cnt}</article>
       </div>
-    )}
+    ))}
   </>);
 };
 
