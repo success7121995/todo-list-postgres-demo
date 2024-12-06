@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from 'react';
-import { useData, type CategoryProps, type FormDataProps } from '@/src/context/DataProvider';
+import { ItemProps, useData, type CategoryProps, type FormDataProps } from '@/src/context/DataProvider';
 import { Select, SelectItem } from '@nextui-org/select';
 import { Input, Textarea } from '@nextui-org/input';
 import { useForm, Controller, type SubmitHandler } from 'react-hook-form';
@@ -9,10 +9,11 @@ import { Tag } from '@/src/components';
 
 interface FormProps {
   action: 'insert' | 'update',
-  id?: string
+  id?: string,
+  data?: ItemProps
 }
 
-const Form = ({ action, id }: FormProps) => {
+const Form = ({ action, id, data }: FormProps) => {
   const [categories, setCategories] = useState<CategoryProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 

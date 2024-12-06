@@ -17,16 +17,14 @@ const Home = () => {
     <h1 className="font-tangerine text-5xl text-secondary text-center mt-10">Tasks</h1>
 
     {/* Main Section */}
-    <div>
-      <div className="relative">
-        <Suspense>
-          <SearchBar />
-        </Suspense>
+    <div className="relative">
+      <div className="relative flex justify-between items-center">
+        <SearchBar />
 
         {/* Insert */}
         <Link
-          href="/tasks/insert"
-          className="bg-primary rounded-full absolute -right-[15px] top-[2px] p-[10px] md:right-0"
+          href="/insert"
+          className="bg-primary rounded-full md:absolute md:top-[2px] p-[10px] md:right-0"
         >
           <PlugIcon className="h-[13px] w-[13px] fill-secondary"/>
         </Link>

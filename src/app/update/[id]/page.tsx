@@ -1,4 +1,4 @@
-import { BackBtn, Form } from '@/src/components';
+import { BackBtn, Form, FormWrapper } from '@/src/components';
 
 const UpdatePage = async ({
   params,
@@ -13,7 +13,7 @@ const UpdatePage = async ({
     <div>
       <BackBtn />
       
-      <Form action="update" id={id}/>
+      <FormWrapper id={id} />
     </div>
   </>)
 };

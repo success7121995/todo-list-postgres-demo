@@ -33,7 +33,7 @@ const Tags = () => {
   ];
 
   return (
-    <div className="my-3 flex justify-between items-center gap-x-4">
+    <div className="my-3 flex justify-between items-center gap-x-3">
       {tags.map((tag, i) => (
         <div key={i}>
           <Tag name={tag.name} color={tag.color} keyName={tag.keyName} />

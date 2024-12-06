@@ -6,3 +6,5 @@ export { default as Rows } from './rows';
 export { default as BackBtn } from './back-btn';
 export { default as Form } from './form';
 export { default as Details } from './details';
+export { default as Pagination } from './pagination';
+export { default as FormWrapper } from './form-wrapper';
