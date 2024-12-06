@@ -69,14 +69,14 @@ export const GET = async (req: Request) => {
       case 'z-a':
         stmt += ` ORDER BY t.t_title DESC`;
         break;
-      case 'newest':
+      case 'n-o':
         stmt += ` ORDER BY t.created_at DESC`;
         break;
-      case 'oldest':
+      case 'o-n':
         stmt += ` ORDER BY t.created_at ASC`;
         break;
       default:
-        stmt += ` ORDER BY t.t_title ASC`;
+        stmt += ` ORDER BY t.created_at DESC`;
         break;
     }
 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useFilter, type FiltersProps } from '@/src/context/FilterProvider';
+import { useSearchParams } from 'next/navigation';
 
 export interface TagProps {
   keyName?: FiltersProps,
@@ -14,19 +15,29 @@ const Tag = ({
   name,
   color
 }: TagProps) => {
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const searchParams = useSearchParams();
+  const { addFilter, removeFilter, extractFilters } = useFilter();
 
-  const { addFilter, removeFilter } = useFilter();
+  const handleTagToggle = () => {
+    const filters = extractFilters(searchParams);
+    
+    // Detemine whether the tag should be toggled
+    return !filters.includes(keyName as FiltersProps);
+  };
+
+  const [isDisabled, setIsDisabled] = useState<boolean>(handleTagToggle());
+
 
   useEffect(() => {
     if (!keyName) return;
 
+    // Detemine whether add or remove filters by keyName
     if (isDisabled) {
       removeFilter(keyName);
     } else {
       addFilter(keyName);
     }
-}, [isDisabled]);
+  }, [isDisabled]);
 
   return (<>
     <button

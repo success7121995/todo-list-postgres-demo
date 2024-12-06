@@ -40,7 +40,7 @@ const SearchBar = () => {
 
   /**
    * Handle the search submit
-   * @param e FormEvent
+   * @param
    */
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -56,9 +56,9 @@ const SearchBar = () => {
       params.delete('search');
     }
 
-    // // Push new URL with updated search parameters
-    // const queryString = params.toString();
-    // router.push(queryString ? `?${queryString}` : '/');
+    const queryString = params.toString();
+    console.log(queryString);
+    router.push(queryString ? `?${queryString}` : '/');
   };
 
   return (

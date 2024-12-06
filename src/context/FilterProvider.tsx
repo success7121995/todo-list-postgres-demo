@@ -1,18 +1,18 @@
 'use client';
 
 import { ReactNode, useContext, createContext, useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams,  type ReadonlyURLSearchParams } from 'next/navigation';
 
 export type FiltersProps = 'completed' | 'important' | 'life' | 'family' | 'work';
 export type SortProps = 'a-z' | 'z-a' | 'o-n' | 'n-o';
 
 interface FilterContextState {
-  filters: FiltersProps[];
-  sort: SortProps;
-  addFilter: (filter: FiltersProps) => void;
-  removeFilter: (filter: FiltersProps) => void;
-  toggleFilter: (filter: FiltersProps) => void;
-  setSort: (sort: SortProps) => void;
+  filters: FiltersProps[],
+  sort: SortProps,
+  addFilter: (filter: FiltersProps) => void,
+  removeFilter: (filter: FiltersProps) => void,
+  setSort: (sort: SortProps) => void,
+  extractFilters: (searchParams: ReadonlyURLSearchParams) => FiltersProps[]
 }
 
 const FilterContext = createContext<FilterContextState | undefined>(undefined);
@@ -31,32 +31,46 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
   const [filters, setFilters] = useState<FiltersProps[]>([]);
   const [sort, setSortState] = useState<SortProps>('a-z');
+  const [search, setSearch] = useState<string>('');
 
   // Initialize filters and sort from URL on mount or when searchParams change
   useEffect(() => {
-    const initialFilters: FiltersProps[] = [];
-    const initialSort = (searchParams.get('sort') as SortProps) || 'a-z';
+    const initialSort = (searchParams.get('sort') as SortProps) || 'n-o';
+    const initialSearch = searchParams.get('search') as string;
+    const initialFilters = extractFilters(searchParams);
 
-    // Extract filters from URL
+    setFilters(initialFilters);
+    setSortState(initialSort);
+    setSearch(initialSearch)
+  }, [searchParams]);
+
+  /**
+   * Extract filters to a new array
+   */
+  const extractFilters = (searchParams: ReadonlyURLSearchParams): FiltersProps[] => {
+    let initialFilters: FiltersProps[] = [];
+
     if (searchParams.has('important') && searchParams.get('important') === 'true') {
       initialFilters.push('important');
     }
     if (searchParams.has('completed') && searchParams.get('completed') === 'true') {
       initialFilters.push('completed');
     }
+
     // Categories
     const categories = searchParams.getAll('category') as FiltersProps[];
     initialFilters.push(...categories.filter(cat => ['life', 'family', 'work'].includes(cat)));
 
-    setFilters(initialFilters);
-    setSortState(initialSort);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+    return initialFilters;
+  };
 
   /**
-   * Update the URL search parameters based on current filters and sort.
+   * Update the URL search parameters based on current filters and sort
+   * @param updatedFilters 
+   * @param updatedSort 
+   * @param updatedSearch 
    */
-  const updateURL = (updatedFilters: FiltersProps[], updatedSort: SortProps) => {
+  const updateURL = (updatedFilters: FiltersProps[], updatedSort: SortProps, updatedSearch: string) => {
     const params = new URLSearchParams();
 
     // Set search parameters based on filters
@@ -71,6 +85,10 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     // Set sort parameter
     if (updatedSort) {
       params.set('sort', updatedSort);
+    }
+
+    if (updatedSearch) {
+      params.set('search', updatedSearch);
     }
 
     const queryString = params.toString();
@@ -99,20 +117,6 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
   };
 
   /**
-   * Toggle a filter
-   * @param filter 
-   */
-  const toggleFilter = (filter: FiltersProps) => {
-    setFilters(prev => {
-      if (prev.includes(filter)) {
-        return prev.filter(item => item !== filter);
-      } else {
-        return [...prev, filter];
-      }
-    });
-  };
-
-  /**
    * Set the sort option
    * @param newSort 
    */
@@ -122,7 +126,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
   // Sync URL when filters or sort change
   useEffect(() => {
-    updateURL(filters, sort);
+    updateURL(filters, sort, search);
   }, [filters, sort]);
 
   return (
@@ -131,8 +135,8 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
       sort,
       addFilter,
       removeFilter,
-      toggleFilter,
-      setSort
+      setSort,
+      extractFilters
     }}>
       {children}
     </FilterContext.Provider>
