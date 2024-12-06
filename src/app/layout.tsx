@@ -63,7 +63,7 @@ const RootLayout = ({
           `}
         > 
           <div className="h-screen w-screen flex justify-center items-center">
-            <div className="bg-white h-[550px] w-[350px] md:w-[450px] md:h-[623px] rounded-[30px] min-w-[367px]">
+            <div className="bg-white h-[575px] w-[350px] md:w-[450px] md:h-[623px] rounded-[30px] min-w-[367px]">
               <div className="w-[85%] mx-auto">
                 {children}
               </div>

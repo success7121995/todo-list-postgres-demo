@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useData, type ItemProps } from '@/src/context/DataProvider';
 import { useRouter } from 'next/navigation';
 import { ClipLoader } from "react-spinners";
@@ -34,10 +34,16 @@ const Details = ({ id }: DetailsProps) => {
   const [completeState, setCompleteState] = useState<boolean | undefined>(undefined);
   // Ensure that the state update only occurs while the important or complete is switched
   const [isMounted, setIsMounted] = useState<boolean>(false);
+  // Read more or less toggler
+  const [isReadMore, setIsReadMore] = useState<boolean>(false);
+  // State to determine if content is overflowed
+  const [isContentOverflow, setIsContentOverflow] = useState<boolean>(false);
 
   const { deleteItem, fetchItem, toggleItemState } = useData();
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const { replace } = useRouter();
+
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleFetchItems = async () => {
@@ -78,7 +84,18 @@ const Details = ({ id }: DetailsProps) => {
     };
 
     handletoggleItemState();
-  }, [completeState, id]);
+  }, [completeState, id, isMounted]);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      const current = contentRef.current;
+      const lineHeight = parseInt(getComputedStyle(current).lineHeight || '20');
+      const maxLines = 15;
+      if (current.scrollHeight > lineHeight * maxLines) {
+        setIsContentOverflow(true);
+      }
+    }
+  }, [items]);
 
   /**
    * Handle the deletion of an item.
@@ -185,13 +202,38 @@ const Details = ({ id }: DetailsProps) => {
     {items && items.length === 1 && items.map(item => (
       <div key={item.t_id} className="mt-4">
         {/* Title */}
-        <h1 className="font-publicSans text-secondary max-h-[50px] truncate">{item.t_title}</h1>
+        <h1 className="font-publicSans text-secondary line-clamp-2">{item.t_title}</h1>
 
         {/* Content */}
-        <article className="font-publicSans text-xs text-darkText h-[500px] bg-black truncate">{item.t_cnt}</article>
+        <article 
+          ref={contentRef}
+          className={`mt-4 font-publicSans text-xs text-darkText p-2 relative transition-all duration-200 ${
+            !isReadMore ? 'line-clamp-[15]' : 'max-h-[300px] overflow-y-scroll'
+          }`}
+        >
+          {item.t_cnt}
+          {/* Gradient Overlay */}
+          {!isReadMore && isContentOverflow && (
+            <div className="absolute -bottom-[2px] left-0 right-0 h-8 bg-gradient-to-t from-[#FEFEFE] to-transparent pointer-events-none"></div>
+          )}
+        </article>
+
+        {/* Read More / Less */}
+        {isContentOverflow && (
+          <div className="w-full text-center mt-3">
+            <button
+              onClick={() => setIsReadMore(prev => !prev)}
+              className="outline-none text-center border border-secondary px-3 py-2 font-publicSans text-secondary text-xs"
+              aria-expanded={isReadMore}
+              aria-controls={`content-${item.t_id}`}
+            >
+              {isReadMore ? 'Read Less' : 'Read More'}
+            </button>
+          </div>
+        )}
       </div>
     ))}
   </>);
 };
 
-export default Details;
+export default Details; 
