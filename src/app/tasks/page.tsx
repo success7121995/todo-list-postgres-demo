@@ -19,7 +19,9 @@ const Home = () => {
     {/* Main Section */}
     <div>
       <div className="relative">
-        <SearchBar />
+        <Suspense>
+          <SearchBar />
+        </Suspense>
 
         {/* Insert */}
         <Link
