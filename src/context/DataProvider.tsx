@@ -87,9 +87,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
       if (queryString) {
         endpoint += `?${queryString}`;
       }
-  
-      console.log(`Fetching from: ${endpoint}`);
-  
+
       const res = await fetch(endpoint);
       if (!res.ok) {
         console.error('Failed to fetch items:', res.statusText);

@@ -28,7 +28,7 @@ export const useFilter = () => {
 const FilterProvider = ({ children }: { children: ReactNode }) => {
   const { push } = useRouter();
   const searchParams = useSearchParams();
-
+  
   const [filters, setFilters] = useState<FiltersProps[]>([]);
   const [sort, setSortState] = useState<SortProps>('a-z');
   const [search, setSearch] = useState<string>('');
