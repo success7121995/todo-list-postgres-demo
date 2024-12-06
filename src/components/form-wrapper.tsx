@@ -52,7 +52,11 @@ const FormWrapper = ({ id }: FormWrapperProps) => {
 
   return (<>
       {items ? (
-        items.map(item => <Form action="update" id={id} data={item} />)
+        items.map(item => (
+          <div key={item.t_id}>
+            <Form action="update" id={id} data={item} />
+          </div>
+        ))
       ) : (
         <div className="rounded-[10px] w-4/6 mx-auto px-3 py-2 font-publicSans text-xs text-center text-danger mt-4 bg-red-100">
           {error || 'No data available.'}
