@@ -117,6 +117,8 @@ const Rows = () => {
               />
             ))}
           </ul>
+
+          {/* Pagination */}
           <Pagination pageSize={pageSize} itemSize={itemSize}/>
         </>
       ) : (

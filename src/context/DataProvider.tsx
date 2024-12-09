@@ -60,7 +60,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
    * Fetches items from the backend API.
    * @returns A promise that resolves to an array of ItemProps or undefined.
    */
-  const fetchItems = async ({ search = null, sort = 'a-z', filters = null }: QueriesProps): Promise<ItemProps[] | undefined> => {
+  const fetchItems = async ({ search = null, sort = 'n-o', filters = null }: QueriesProps): Promise<ItemProps[] | undefined> => {
     try {
       let endpoint = '/api/fetch-items';
       const queryParams = new URLSearchParams();
@@ -68,8 +68,10 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
       if (search) {
         queryParams.set('search', search);
       }
-  
+      
+      console.log(sort);
       if (sort) {
+        console.log(sort);
         queryParams.set('sort', sort);
       }
   
