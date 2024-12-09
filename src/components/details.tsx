@@ -106,7 +106,7 @@ const Details = ({ id }: DetailsProps) => {
     try {
       const success = await deleteItem(id);
       if (success) {
-        replace('/');
+        replace('/task?sort=n-o');
       } else {
         setError('Failed to delete the task.');
       }
@@ -142,7 +142,7 @@ const Details = ({ id }: DetailsProps) => {
       </button>
 
       {/* Edit */}
-      <button onClick={() => replace(`/tasks/update/${id}`)} className="flex justify-between items-center gap-x-[2px] bg-primary rounded-[3px] px-1 py-[3px]">
+      <button onClick={() => replace(`/update/${id}`)} className="flex justify-between items-center gap-x-[2px] bg-primary rounded-[3px] px-1 py-[3px]">
         <EditIcon className="h-[13px] w-[13px] stroke-secondary" />
         <p className="font-publicSans text-xs text-secondary">Edit</p>
       </button>
