@@ -176,7 +176,7 @@ const Form = ({ action, id, data }: FormProps) => {
         <Textarea
           { ...register('t_cnt', {
             maxLength: {
-              value: 500,
+              value: 2200,
               message: 'The content cannot exceed 500 characters.',
             },
           })}
