@@ -10,8 +10,24 @@ interface PaginationProps {
 
 const Pagination = ({ pageSize, itemSize = 0 }: PaginationProps) => {
   const { page, setPage } = useFilter();
+
   const totalPage = Math.ceil(itemSize / pageSize); 
   const currentPage = Math.min(Math.max(page, 1), totalPage);
+
+  useEffect(() => {
+    const handleArrowKeyDown = (e: KeyboardEvent) => {
+      if (e.key == 'ArrowRight') {
+        handleNextPage()
+      }
+
+      if (e.key == 'ArrowLeft') {
+        handlePrevPage();
+      }
+    };
+
+    window.addEventListener('keydown', handleArrowKeyDown);
+    return () => window.removeEventListener('keydown', handleArrowKeyDown);
+  }, []);
 
   /**
    * Handle switch to the next page
@@ -31,33 +47,6 @@ const Pagination = ({ pageSize, itemSize = 0 }: PaginationProps) => {
     }
   };
 
-  /**
-   * 
-   */
-  // const getPaginationRange = () => {
-  //   const range: (string | number)[] = [];
-  //   const siblingCount = 2;
-  //   const totalPageNumbers = siblingCount * 2 + 5;
-
-  //   if (totalPage <= totalPageNumbers) {
-  //     // If the total pages are less than the pagination numbers, show all pages
-  //     for (let i = 1; i <= totalPage; i++) {
-  //       range.push(i);
-  //     }
-  //   } else {
-  //     const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
-  //     const rightSiblingIndex = Math.min(currentPage + siblingCount, totalPage);
-
-  //     const showLeftEllipsis = leftSiblingIndex > 2;
-  //     const showRightEllipsis = rightSiblingIndex < totalPage - 1;
-
-  //     range.push(1);
-
-  //     // if (showLeftEllipsis) {
-  //     //   range.push('...');
-  //     // }
-  // };
-
   return (<>
     <div className="flex justify-between items-center w-[85%] mx-auto mt-3">
       <button
@@ -72,7 +61,7 @@ const Pagination = ({ pageSize, itemSize = 0 }: PaginationProps) => {
       <div className="flex justify-between items-center gap-x-5">
         {totalPage > 7 ? (
           <>
-
+    
           </>
         ) : (
           Array.from({ length: totalPage}, (_, i) => (

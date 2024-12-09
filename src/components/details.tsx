@@ -156,6 +156,7 @@ const Details = ({ id }: DetailsProps) => {
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
+        className="-top-[40%] md:top-0"
         classNames={{
           body: 'text-center',
           base: 'w-2/6 min-w-[200px] max-w-[280px]',

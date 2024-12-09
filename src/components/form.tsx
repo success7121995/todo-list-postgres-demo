@@ -5,6 +5,7 @@ import { ItemProps, useData, type CategoryProps, type FormDataProps } from '@/sr
 import { Select, SelectItem } from '@nextui-org/select';
 import { Input, Textarea } from '@nextui-org/input';
 import { useForm, Controller, type SubmitHandler } from 'react-hook-form';
+import { ClipLoader } from "react-spinners";
 
 interface FormProps {
   action: 'insert' | 'update',
@@ -14,17 +15,18 @@ interface FormProps {
 
 const Form = ({ action, id, data }: FormProps) => {
   const [categories, setCategories] = useState<CategoryProps[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { fetchCategories, insertItem, fetchItem } = useData();
+  const { fetchCategories, insertItem, fetchItem, updateItem } = useData();
 
   const { control, handleSubmit, register, reset, formState: { errors } } = useForm<FormDataProps>({
     defaultValues: {
-      category: '',
+      c_id: '',
       is_important: false,
-      title: data ? data.t_title : '',
-      content: '',
+      t_title: '',
+      t_cnt: '',
     },
+    values: data
   });
 
   /**
@@ -33,10 +35,20 @@ const Form = ({ action, id, data }: FormProps) => {
    */
   const onSubmit: SubmitHandler<FormDataProps> = async data => {
     try {
-      const success = await insertItem(data);
+      setIsLoading(true);
+      if (action == 'insert') {
+        console.log('insert');
+        await insertItem(data);
+      } else {
+        if (!id) throw Error('No ID is provided.');
+        console.log('update');
+        await updateItem(data, id);
+      }
 
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -51,41 +63,24 @@ const Form = ({ action, id, data }: FormProps) => {
       } 
     };
 
-    /**
-     * Fetch existing item data for update
-     */
-    const handleFetchItem = async () => {
-      try {
-        setLoading(true);
-        if (!id) return;
-        const item = await fetchItem(id);
-        
-        if (item) {
-          const items = Object.values(item)[0];
-          reset({
-            category: items.c_name || undefined,
-            is_important: items.is_important,
-            title: items.t_title,
-            content: items.t_cnt,
-          });
-        }
-      } catch (error) {
-        console.error('Failed to fetch item:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     handleFetchCategories();
-    if (action == 'update') handleFetchItem();
   }, [fetchCategories, fetchItem, id, action, reset]);
 
+  // Display a loading indicator while fetching data
+  if (isLoading) {
+    return (
+      <div className="mt-[50%] flex justify-center items-center">
+        <ClipLoader size={20} color="var(--primary)" />
+      </div>
+    );
+  }
+    
   return (<>
     <form className="mt-3 relative" onSubmit={handleSubmit(onSubmit)}>
       <div>
         <Controller
-          { ...register('category')}
-          name="category"
+          { ...register('c_id')}
+          name="c_id"
           control={control}
           render={({ field, fieldState}) => (
             <>
@@ -93,7 +88,10 @@ const Form = ({ action, id, data }: FormProps) => {
                 { ...field }
                 aria-label="Selection of category"
                 placeholder="Select a category"
-                onChange={value => field.onChange(value)}
+                onChange={value => {
+                  console.log(value);
+                  field.onChange(value)
+                }}
                 classNames={{
                   base: 'w-[200px]',
                   helperWrapper: 'text-red-200',
@@ -107,7 +105,7 @@ const Form = ({ action, id, data }: FormProps) => {
                 }}
               >
                 {categories.map(categories => (
-                  <SelectItem key={categories.c_id} textValue={categories.c_name}>
+                  <SelectItem key={categories.c_id} value={categories.c_id} textValue={categories.c_name}>
                     <p className="text-xs font-publicSans text-darkText capitalize">{categories.c_name}</p>
                   </SelectItem>
                 ))}
@@ -146,7 +144,7 @@ const Form = ({ action, id, data }: FormProps) => {
         {/* Title */}
         <div className="flex flex-col mb-5">
           <Input
-            { ...register('title') }
+            { ...register('t_title') }
             aria-label="Input for title"
             type="text"
             variant="underlined" 
@@ -166,7 +164,7 @@ const Form = ({ action, id, data }: FormProps) => {
 
         {/* Textarea */}
         <Textarea
-          { ...register('content')}
+          { ...register('t_cnt')}
           aria-label="Textarea for content"
           label="Content"
           placeholder="Enter your description"

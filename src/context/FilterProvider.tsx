@@ -15,6 +15,7 @@ interface FilterContextState {
   removeFilter: (filter: FiltersProps) => void,
   setSort: (sort: SortProps) => void,
   setPage: (page: number) => void,
+  setSearch: (search: string) => void,
   extractFilters: (searchParams: ReadonlyURLSearchParams) => FiltersProps[]
 }
 
@@ -34,7 +35,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
   const [filters, setFilters] = useState<FiltersProps[]>([]);
   const [sort, setSortState] = useState<SortProps>('n-o');
-  const [search, setSearch] = useState<string>('');
+  const [search, setSearchState] = useState<string>('');
   const [page, setPage] = useState<number>(1);
 
   // Initialize filters and sort from URL on mount or when searchParams change
@@ -46,7 +47,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
     setFilters(initialFilters);
     setSortState(initialSort);
-    setSearch(initialSearch);
+    setSearchState(initialSearch);
     setPage(initialPage);
   }, [searchParams]);
 
@@ -142,6 +143,15 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     setSortState(newSort);
   };
 
+  /**
+   * Reset page to 1 after searching
+   * @param newSearch 
+   */
+  const setSearch = (newSearch: string) => {
+    setPage(1);
+    setSearchState(newSearch);
+  }
+
   return (
     <FilterContext.Provider value={{
       filters,
@@ -152,6 +162,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
       removeFilter,
       setSort,
       setPage,
+      setSearch,
       extractFilters
     }}>
       {children}

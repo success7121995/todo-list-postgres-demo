@@ -17,7 +17,8 @@ export const GET = async (req: Request) => {
         t.t_cnt, 
         t.is_completed, 
         t.is_important, 
-        c.c_name
+        c.c_name,
+        c.c_id
       FROM Tasks t
       LEFT JOIN Categories c ON c.c_id = t.c_id
       WHERE t_id = $1

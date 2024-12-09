@@ -11,7 +11,6 @@ export const GET = async (req: Request) => {
     const isImportant = searchParams.get('important');
     const isCompleted = searchParams.get('completed');
 
-
     const sql = neon(`${process.env.DATABASE_URL}`);
     
     if (!sql) return new Response(JSON.stringify('Failed to connect database'), {

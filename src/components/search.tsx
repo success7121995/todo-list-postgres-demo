@@ -15,7 +15,7 @@ import SearchIcon from '@/src/public/svg/search.svg';
 import FilterIcon from '@/src/public/svg/filter.svg';
 
 const SearchBar = () => {
-  const { setSort } = useFilter();
+  const { setSort, setSearch } = useFilter();
   const { push } = useRouter();
   const searchParams = useSearchParams();
   const searchRef = useRef<HTMLInputElement>(null);
@@ -23,7 +23,7 @@ const SearchBar = () => {
   useEffect(() => {
     /**
      * Press Ctrl + K to focus the search bar
-     * @param e KeyboardEvent
+     * @param e
      */
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.key.toLowerCase() === 'k') {
@@ -49,7 +49,7 @@ const SearchBar = () => {
     const params = new URLSearchParams(searchParams.toString());
 
     if (searchValue) {
-      params.set('search', searchValue);
+      setSearch(searchValue);
     } else {
       params.delete('search');
     }

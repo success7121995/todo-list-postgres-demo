@@ -10,7 +10,7 @@ const TaskLayout = ({
   return (
     <Suspense fallback={<ClipLoader size={20} color="var(--primary)" />}>
       <FilterProvider>
-        { children }
+      { children }
       </FilterProvider>
     </Suspense>
   );

@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation';
 import { FiltersProps, SortProps } from './FilterProvider';
 
 export interface FormDataProps {
-  category?: string,
+  c_id?: string,
   is_important: boolean,
-  title: string,
-  content?: string | null
+  t_title: string,
+  t_cnt?: string | null
 }
 
 // Interface for individual item properties
@@ -39,9 +39,9 @@ interface DataContextState {
   fetchItem: (id: string) => Promise<ItemProps[] | undefined>
   fetchCategories: () => Promise<CategoryProps[] | undefined>,
   insertItem: (data: FormDataProps) => Promise<boolean>,
+  updateItem: (data: FormDataProps, id: string) => Promise<boolean>,
   toggleItemState: (id: string, handle: 'is_important' | 'is_completed', state: boolean) => Promise<void>,
-  deleteItem: (id: string) => Promise<boolean>,
-  searchItems: (search: string, sort?: string) => Promise<ItemProps[] | undefined>
+  deleteItem: (id: string) => Promise<boolean>
 }
 
 const DataContext = createContext<DataContextState | undefined>(undefined);
@@ -145,19 +145,18 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   /**
    * Insert an item
    * @param data 
-   * @returns 
    */
   const insertItem = async (data: FormDataProps) => {
-    const { title, category, is_important, content } = data;
+    const { t_title, c_id, is_important, t_cnt } = data;
 
     try {
       const res = await fetch('/api/insert-item', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          t_title: title,
-          c_id: category,
-          t_cnt: content,
+          t_title,
+          c_id,
+          t_cnt,
           is_important
         })
       });
@@ -166,9 +165,37 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
       if (res.ok && res.status == 200) replace('/');
       return true;
     } catch (err) {
-      // console.error(`Error deleting item ${id}:`, err);
       return false;
     }
+  };
+
+  /**
+   * 
+   * @param data 
+   */
+  const updateItem = async (data: FormDataProps, id: string) => {
+    const { t_title, c_id, is_important, t_cnt } = data;
+
+    try {
+      const res = await fetch('/api/update-item', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          t_title,
+          c_id,
+          t_cnt,
+          is_important,
+          t_id: id
+        })
+      });
+
+      // Redirect to home page
+      if (res.ok && res.status == 200) replace('/');
+      return true;
+    } catch (err) {
+      console.error(`Error updating item ${id}:`, err);
+      return false;
+    }    
   };
 
   /**
@@ -213,33 +240,10 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
       }
 
       await res.json();
-      // Optionally, check the response message or status
       return true;
     } catch (err) {
       console.error(`Error deleting item ${id}:`, err);
       return false;
-    }
-  };
-
-  /**
-   * Handle search
-   * @param search
-   * @param sort 
-   */
-  const searchItems = async (search: string): Promise<ItemProps[] | undefined> => {
-    try {
-      const res = await fetch(`/api/search-items?search=${encodeURIComponent(search)}`);
-      if (!res.ok) {
-        console.error('Failed to search:', res.statusText);
-        return undefined;
-      }
-
-      const items: ItemProps[] = await res.json();
-
-      return items;
-    } catch (err) {
-      console.error('Error fetching items', err);
-      return undefined;
     }
   };
 
@@ -249,9 +253,9 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
       fetchItem,
       fetchCategories,
       insertItem,
+      updateItem,
       toggleItemState,
-      deleteItem,
-      searchItems
+      deleteItem
     }}>
       {children}
     </DataContext.Provider>
