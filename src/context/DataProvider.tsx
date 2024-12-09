@@ -69,9 +69,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
         queryParams.set('search', search);
       }
       
-      console.log(sort);
       if (sort) {
-        console.log(sort);
         queryParams.set('sort', sort);
       }
   
