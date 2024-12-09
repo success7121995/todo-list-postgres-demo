@@ -79,7 +79,9 @@ const Form = ({ action, id, data }: FormProps) => {
     <form className="mt-3 relative" onSubmit={handleSubmit(onSubmit)}>
       <div>
         <Controller
-          { ...register('c_id')}
+          { ...register('c_id', {
+
+          })}
           name="c_id"
           control={control}
           render={({ field, fieldState}) => (
@@ -122,7 +124,7 @@ const Form = ({ action, id, data }: FormProps) => {
 
         {/* Toggle Important */}
         <div className="mt-[2px]">
-          <Controller 
+          <Controller
             name="is_important"
             control={control}
             render={({ field }) => (
@@ -144,7 +146,9 @@ const Form = ({ action, id, data }: FormProps) => {
         {/* Title */}
         <div className="flex flex-col mb-5">
           <Input
-            { ...register('t_title') }
+            { ...register('t_title', {
+              required: 'Title is required.'
+            })}
             aria-label="Input for title"
             type="text"
             variant="underlined" 
@@ -153,33 +157,42 @@ const Form = ({ action, id, data }: FormProps) => {
               base: 'group-data-[focus=true]:border-none',
               label: 'text-secondary group-data-[focus=true]:text-secondary',
               input: [
-                'font-publicSans group-data-[focus=true]:text-sm group-data-[focus=true]:text-darkText',
+                'font-publicSans group-data-[focus=true]:text-sm group-data-[focus=true]:text-secondary text-secondary',
               ],
               inputWrapper: [
                 'border-b-[1px] border-secondary'
               ]
             }}
           />
+          { errors && (
+            <p className="font-publicSans text-danger text-xs">{errors.t_title?.message}</p>
+          )}
         </div>
 
         {/* Textarea */}
+        { errors && (
+            <p className="font-publicSans text-danger text-xs">{errors.t_cnt?.message}</p>
+          )}
         <Textarea
-          { ...register('t_cnt')}
+          { ...register('t_cnt', {
+            maxLength: {
+              value: 500,
+              message: 'The content cannot exceed 500 characters.',
+            },
+          })}
           aria-label="Textarea for content"
           label="Content"
           placeholder="Enter your description"
           classNames={{
-            input: 'font-publicSans text-sm text-darkText'
+            input: 'font-publicSans text-xs text-darkText'
           }}
           minRows={10}
           maxRows={10}
         />
-
       </div>
       
       {/* Submit */}
       <button type="submit" className="absolute bg-primary px-3 py-[3px] font-publicSans text-sm text-secondary top-2 right-3 rounded-md">Save</button>
-
     </form>
   </>);
 };
